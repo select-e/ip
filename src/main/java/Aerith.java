@@ -1,3 +1,4 @@
+import java.util.Date;
 import java.util.Scanner;
 
 public class Aerith {
@@ -54,6 +55,22 @@ public class Aerith {
                     taskCount++;
                     System.out.println("✧ I have added a new todo: ✧");
                     System.out.println(todo + "\n");
+                    break;
+                case "deadline":
+                    // Add deadline task
+                    String[] parts = arr[1].split("/");
+                    taskDesc = parts[0].trim();
+                    String[] cmd = parts[1].split(" ", 2);
+                    // Get date
+                    String date = "";
+                    if (cmd[0].equals("by")) {
+                        date = cmd[1];
+                    }
+                    Deadline deadline = new Deadline(taskDesc, date);
+                    tasks[taskCount] = deadline;
+                    taskCount++;
+                    System.out.println("✧ I have added a new task: ✧");
+                    System.out.println(deadline + "\n");
                     break;
                 default:
                     // Add item
