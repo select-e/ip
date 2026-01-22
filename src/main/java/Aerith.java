@@ -1,8 +1,7 @@
-import java.util.Date;
 import java.util.Scanner;
 
 public class Aerith {
-    private Task[] tasks = new Task[100];
+    private final Task[] tasks = new Task[100];
     private int taskCount = 0;
 
     public static void main(String[] args) {
@@ -32,8 +31,9 @@ public class Aerith {
             System.out.println("✧ ✧ ✧\n");
         } else {
             String[] arr = input.split(" ", 2);
-            int taskNum = -1;
-            String taskDesc = "";
+            int taskNum;
+            String taskDesc;
+            String[] parts;
             switch(arr[0]) {
                 case "mark":
                     taskNum = Integer.parseInt(arr[1]);
@@ -58,19 +58,23 @@ public class Aerith {
                     break;
                 case "deadline":
                     // Add deadline task
-                    String[] parts = arr[1].split("/");
+                    parts = arr[1].split("/");
                     taskDesc = parts[0].trim();
-                    String[] cmd = parts[1].split(" ", 2);
-                    // Get date
-                    String date = "";
-                    if (cmd[0].equals("by")) {
-                        date = cmd[1];
-                    }
-                    Deadline deadline = new Deadline(taskDesc, date);
+                    Deadline deadline = getDeadline(parts, taskDesc);
                     tasks[taskCount] = deadline;
                     taskCount++;
                     System.out.println("✧ I have added a new task: ✧");
                     System.out.println(deadline + "\n");
+                    break;
+                case "event":
+                    // Add event
+                    parts = arr[1].split("/");
+                    taskDesc = parts[0].trim();
+                    Event event = getEvent(parts, taskDesc);
+                    tasks[taskCount] = event;
+                    taskCount++;
+                    System.out.println("✧ I have added a new event: ✧");
+                    System.out.println(event + "\n");
                     break;
                 default:
                     // Add item
@@ -80,5 +84,29 @@ public class Aerith {
                     break;
             }
         }
+    }
+
+    private static Deadline getDeadline(String[] parts, String taskDesc) {
+        String[] cmd = parts[1].split(" ", 2);
+        // Get date
+        String date = "";
+        if (cmd[0].equals("by")) {
+            date = cmd[1].trim();
+        }
+        return new Deadline(taskDesc, date);
+    }
+
+    private static Event getEvent(String[] parts, String taskDesc) {
+        String from = "";
+        String to = "";
+        for (int i = 1; i < parts.length; i++) {
+            String[] cmd = parts[i].split(" ", 2);
+            if (cmd[0].equals("from")) {
+                from = cmd[1].trim();
+            } else if (cmd[0].equals("to")) {
+                to = cmd[1].trim();
+            }
+        }
+        return new Event(taskDesc, from, to);
     }
 }
