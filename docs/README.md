@@ -1,6 +1,4 @@
-# Duke User Guide
-
-// Update the title above to match the actual product name
+# Aerith User Guide
 
 // Product screenshot goes here
 
