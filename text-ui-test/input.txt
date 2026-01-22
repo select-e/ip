@@ -4,4 +4,6 @@ event event task /from today 6pm /to tomorrow 6am
 list
 mark 1
 unmark 1
+delete 1
+list
 bye

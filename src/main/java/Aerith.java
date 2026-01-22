@@ -120,6 +120,16 @@ public class Aerith {
                     System.out.println("✧ I have added a new event: ✧");
                     System.out.println(event + "\n");
                     break;
+                case "delete":
+                    if (arr.length < 2 || arr[1].isBlank()) {
+                        throw new InvalidInputException("Please specify the task you want to remove.");
+                    }
+                    taskNum = Integer.parseInt(arr[1]);
+                    Task task = tasks.get(taskNum - 1);
+                    tasks.remove(task);
+                    System.out.println("✧ I have removed this task: ✧");
+                    System.out.println(task + "\n");
+                    break;
                 default:
                     throw new InvalidInputException("My apologies, I do not understand what that means.");
             }

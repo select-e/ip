@@ -24,6 +24,14 @@
 ✧ I have marked this task as not done yet: ✧
 1. [ ] ✎ todo task
 
+✧ I have removed this task: ✧
+[ ] ✎ todo task
+
+✧ ✧ ✧
+1. [ ] ⏱ deadline task (by: 17 june)
+2. [ ] @ event task (from: today 6pm to: tomorrow 6am)
+✧ ✧ ✧
+
 ✧ I await your return. ✧
 
 ○ ✧ ⚬ .
