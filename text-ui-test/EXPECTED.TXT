@@ -1,7 +1,29 @@
-Hello from
- ____        _        
-|  _ \ _   _| | _____ 
-| | | | | | | |/ / _ \
-| |_| | |_| |   <  __/
-|____/ \__,_|_|\_\___|
 
+. ⚬ ✧ ○
+
+✧ Greetings mage, I am Aerith! ✧
+
+✧ I have added a new todo: ✧
+[ ] ✎ todo task
+
+✧ I have added a new task: ✧
+[ ] ⏱ deadline task (by: 17 june)
+
+✧ I have added a new event: ✧
+[ ] @ event task (from: today 6pm to: tomorrow 6am)
+
+✧ ✧ ✧
+1. [ ] ✎ todo task
+2. [ ] ⏱ deadline task (by: 17 june)
+3. [ ] @ event task (from: today 6pm to: tomorrow 6am)
+✧ ✧ ✧
+
+✧ I have marked this task as done: ✧
+1. [X] ✎ todo task
+
+✧ I have marked this task as not done yet: ✧
+1. [ ] ✎ todo task
+
+✧ I await your return. ✧
+
+○ ✧ ⚬ .

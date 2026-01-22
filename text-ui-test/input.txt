@@ -1,0 +1,7 @@
+todo todo task
+deadline deadline task /by 17 june
+event event task /from today 6pm /to tomorrow 6am
+list
+mark 1
+unmark 1
+bye
