@@ -32,6 +32,7 @@ public class Aerith {
         } else {
             String[] arr = input.split(" ", 2);
             int taskNum = -1;
+            String taskDesc = "";
             switch(arr[0]) {
                 case "mark":
                     taskNum = Integer.parseInt(arr[1]);
@@ -44,6 +45,15 @@ public class Aerith {
                     tasks[taskNum - 1].markDone(false);
                     System.out.println("✧ I have marked this task as not done yet: ✧");
                     System.out.println(taskNum + ". " + tasks[taskNum - 1] + "\n");
+                    break;
+                case "todo":
+                    // Add to do
+                    taskDesc = arr[1];
+                    Todo todo = new Todo(taskDesc);
+                    tasks[taskCount] = todo;
+                    taskCount++;
+                    System.out.println("✧ I have added a new todo: ✧");
+                    System.out.println(todo + "\n");
                     break;
                 default:
                     // Add item
