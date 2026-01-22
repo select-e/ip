@@ -1,8 +1,8 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Aerith {
-    private final Task[] tasks = new Task[100];
-    private int taskCount = 0;
+    private final ArrayList<Task> tasks = new ArrayList<>(100);
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -29,8 +29,8 @@ public class Aerith {
         if (input.equals("list")) {
             // List items
             System.out.println("✧ ✧ ✧");
-            for (int i = 0; i < taskCount; i++) {
-                System.out.println((i + 1) + ". " + tasks[i]);
+            for (int i = 0; i < tasks.size(); i++) {
+                System.out.println((i + 1) + ". " + tasks.get(i));
             }
             System.out.println("✧ ✧ ✧\n");
         } else {
@@ -48,12 +48,12 @@ public class Aerith {
                     } catch (NumberFormatException e) {
                         throw new InvalidInputException("Please specify tasks by their number.");
                     }
-                    if (taskNum <= 0 || taskNum > taskCount) {
+                    if (taskNum <= 0 || taskNum > tasks.size()) {
                         throw new InvalidInputException("Please enter a valid task number.");
                     }
-                    tasks[taskNum - 1].markDone(true);
+                    tasks.get(taskNum - 1).markDone(true);
                     System.out.println("✧ I have marked this task as done: ✧");
-                    System.out.println(taskNum + ". " + tasks[taskNum - 1] + "\n");
+                    System.out.println(taskNum + ". " + tasks.get(taskNum - 1) + "\n");
                     break;
                 case "unmark":
                     if (arr.length < 2) {
@@ -64,12 +64,12 @@ public class Aerith {
                     } catch (NumberFormatException e) {
                         throw new InvalidInputException("Please specify tasks by their number.");
                     }
-                    if (taskNum <= 0 || taskNum > taskCount) {
+                    if (taskNum <= 0 || taskNum > tasks.size()) {
                         throw new InvalidInputException("Please enter a valid task number.");
                     }
-                    tasks[taskNum - 1].markDone(false);
+                    tasks.get(taskNum - 1).markDone(false);
                     System.out.println("✧ I have marked this task as not done yet: ✧");
-                    System.out.println(taskNum + ". " + tasks[taskNum - 1] + "\n");
+                    System.out.println(taskNum + ". " + tasks.get(taskNum - 1) + "\n");
                     break;
                 case "todo":
                     if (arr.length < 2 || arr[1].isBlank()) {
@@ -79,8 +79,7 @@ public class Aerith {
                     // Add to do
                     taskDesc = arr[1].trim();
                     Todo todo = new Todo(taskDesc);
-                    tasks[taskCount] = todo;
-                    taskCount++;
+                    tasks.add(todo);
                     System.out.println("✧ I have added a new todo: ✧");
                     System.out.println(todo + "\n");
                     break;
@@ -100,8 +99,7 @@ public class Aerith {
                     }
 
                     Deadline deadline = getDeadline(parts, taskDesc);
-                    tasks[taskCount] = deadline;
-                    taskCount++;
+                    tasks.add(deadline);
                     System.out.println("✧ I have added a new task: ✧");
                     System.out.println(deadline + "\n");
                     break;
@@ -118,8 +116,7 @@ public class Aerith {
                         throw new InvalidInputException(emptyMessage);
                     }
                     Event event = getEvent(parts, taskDesc);
-                    tasks[taskCount] = event;
-                    taskCount++;
+                    tasks.add(event);
                     System.out.println("✧ I have added a new event: ✧");
                     System.out.println(event + "\n");
                     break;
