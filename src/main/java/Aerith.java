@@ -32,18 +32,26 @@ public class Aerith {
         try {
             BufferedReader br = new BufferedReader(new FileReader("./data/save.txt"));
             try {
-                StringBuilder sb = new StringBuilder();
+                ArrayList<Task> tasks = new ArrayList<>(100);
                 String line = br.readLine();
 
                 while (line != null) {
-                    sb.append(line);
-                    sb.append(System.lineSeparator());
+                    String[] taskInfo = line.split(" \\| ");
+                    switch (taskInfo[0]) {
+                        case "T":
+                            tasks.add(new Todo(taskInfo[1]));
+                            break;
+                        case "D":
+                            tasks.add(new Deadline(taskInfo[1], taskInfo[2]));
+                            break;
+                        case "E":
+                            tasks.add(new Event(taskInfo[1], taskInfo[2], taskInfo[3]));
+                            break;
+                    }
                     line = br.readLine();
                 }
-                String everything = sb.toString();
                 br.close();
-
-                System.out.println(everything);
+                return tasks;
             } catch (IOException e) {
                 System.out.println("⚠ Something went wrong with the saved data. ⚠");
             }
@@ -53,13 +61,13 @@ public class Aerith {
                 File saveFile = new File("./data/save.txt");
                 saveFile.getParentFile().mkdirs();
                 saveFile.createNewFile();
+                return new ArrayList<>(100);
             } catch (IOException ioException) {
                 System.out.println("⚠ Something went wrong while trying to create the file. ⚠");
                 ioException.printStackTrace();
             }
         }
-
-        return new ArrayList<>(100);
+        return null;
     }
 
     private void handleInput(String input) throws InvalidInputException {
