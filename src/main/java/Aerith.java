@@ -1,12 +1,14 @@
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Aerith {
-    private final ArrayList<Task> tasks = new ArrayList<>(100);
+    private ArrayList<Task> tasks;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         Aerith aerith = new Aerith();
+        aerith.tasks = loadTasks();
 
         System.out.println("\n. ⚬ ✧ ○\n");
         System.out.println("✧ Greetings mage, I am Aerith! ✧\n");
@@ -23,6 +25,41 @@ public class Aerith {
 
         System.out.println("✧ I await your return. ✧");
         System.out.println("\n○ ✧ ⚬ .");
+    }
+
+    private static ArrayList<Task> loadTasks() {
+        // Open the save file
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("./data/save.txt"));
+            try {
+                StringBuilder sb = new StringBuilder();
+                String line = br.readLine();
+
+                while (line != null) {
+                    sb.append(line);
+                    sb.append(System.lineSeparator());
+                    line = br.readLine();
+                }
+                String everything = sb.toString();
+                br.close();
+
+                System.out.println(everything);
+            } catch (IOException e) {
+                System.out.println("⚠ Something went wrong with the saved data. ⚠");
+            }
+        } catch (FileNotFoundException e) {
+            // Create a new save file
+            try {
+                File saveFile = new File("./data/save.txt");
+                saveFile.getParentFile().mkdirs();
+                saveFile.createNewFile();
+            } catch (IOException ioException) {
+                System.out.println("⚠ Something went wrong while trying to create the file. ⚠");
+                ioException.printStackTrace();
+            }
+        }
+
+        return new ArrayList<>(100);
     }
 
     private void handleInput(String input) throws InvalidInputException {
