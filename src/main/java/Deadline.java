@@ -7,6 +7,11 @@ public class Deadline extends Task {
     }
 
     @Override
+    public String toSaveFormat() {
+        return String.format("D | %d | %s | %s", super.isDone ? 1 : 0, super.description, this.deadline);
+    }
+
+    @Override
     public String toString() {
         return "[" + super.getStatusIcon() + "] ⏱ " + super.getDescription()
                 + " (by: " + deadline + ")";

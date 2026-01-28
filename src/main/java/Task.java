@@ -1,4 +1,4 @@
-public class Task {
+public abstract class Task {
     protected String description;
     protected boolean isDone;
 
@@ -18,6 +18,8 @@ public class Task {
     public void markDone(boolean value) {
         isDone = value;
     }
+
+    public abstract String toSaveFormat();
 
     @Override
     public String toString() {
