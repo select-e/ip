@@ -1,6 +1,5 @@
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.Scanner;
 
 public class Aerith {
@@ -105,6 +104,7 @@ public class Aerith {
                         throw new InvalidInputException("Please enter a valid task number.");
                     }
                     tasks.get(taskNum - 1).markDone(true);
+                    updateTasks();
                     System.out.println("✧ I have marked this task as done: ✧");
                     System.out.println(taskNum + ". " + tasks.get(taskNum - 1) + "\n");
                     break;
@@ -121,6 +121,7 @@ public class Aerith {
                         throw new InvalidInputException("Please enter a valid task number.");
                     }
                     tasks.get(taskNum - 1).markDone(false);
+                    updateTasks();
                     System.out.println("✧ I have marked this task as not done yet: ✧");
                     System.out.println(taskNum + ". " + tasks.get(taskNum - 1) + "\n");
                     break;
@@ -132,7 +133,7 @@ public class Aerith {
                     // Add to do
                     taskDesc = arr[1].trim();
                     Todo todo = new Todo(taskDesc);
-                    saveTask(todo);
+                    saveNewTask(todo);
                     tasks.add(todo);
                     System.out.println("✧ I have added a new todo: ✧");
                     System.out.println(todo + "\n");
@@ -153,7 +154,7 @@ public class Aerith {
                     }
 
                     Deadline deadline = getDeadline(parts, taskDesc);
-                    saveTask(deadline);
+                    saveNewTask(deadline);
                     tasks.add(deadline);
                     System.out.println("✧ I have added a new task: ✧");
                     System.out.println(deadline + "\n");
@@ -171,7 +172,7 @@ public class Aerith {
                         throw new InvalidInputException(emptyMessage);
                     }
                     Event event = getEvent(parts, taskDesc);
-                    saveTask(event);
+                    saveNewTask(event);
                     tasks.add(event);
                     System.out.println("✧ I have added a new event: ✧");
                     System.out.println(event + "\n");
@@ -192,12 +193,29 @@ public class Aerith {
         }
     }
 
-    private void saveTask(Task task) {
+    private void saveNewTask(Task task) {
+        // Write a new task to the data file
         try {
             FileWriter fw = new FileWriter(SAVE_FILE, true);
             BufferedWriter bw = new BufferedWriter(fw);
             bw.write(task.toSaveFormat());
             bw.newLine();
+            bw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void updateTasks()
+    {
+        // Update the data file
+        try {
+            FileWriter fw = new FileWriter(SAVE_FILE, false);
+            BufferedWriter bw = new BufferedWriter(fw);
+            for (Task task : tasks) {
+                bw.write(task.toSaveFormat());
+                bw.newLine();
+            }
             bw.close();
         } catch (IOException e) {
             e.printStackTrace();
