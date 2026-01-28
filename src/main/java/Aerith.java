@@ -1,9 +1,11 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class Aerith {
     private ArrayList<Task> tasks;
+    private final static String SAVE_FILE = "./data/save.txt";
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -30,7 +32,7 @@ public class Aerith {
     private static ArrayList<Task> loadTasks() {
         // Open the save file
         try {
-            BufferedReader br = new BufferedReader(new FileReader("./data/save.txt"));
+            BufferedReader br = new BufferedReader(new FileReader(SAVE_FILE));
             try {
                 ArrayList<Task> tasks = new ArrayList<>(100);
                 String line = br.readLine();
@@ -39,13 +41,19 @@ public class Aerith {
                     String[] taskInfo = line.split(" \\| ");
                     switch (taskInfo[0]) {
                         case "T":
-                            tasks.add(new Todo(taskInfo[1]));
+                            Task todo = new Todo(taskInfo[2]);
+                            todo.markDone(taskInfo[1].equals("1"));
+                            tasks.add(todo);
                             break;
                         case "D":
-                            tasks.add(new Deadline(taskInfo[1], taskInfo[2]));
+                            Task deadline = new Deadline(taskInfo[2], taskInfo[3]);
+                            deadline.markDone(taskInfo[1].equals("1"));
+                            tasks.add(deadline);
                             break;
                         case "E":
-                            tasks.add(new Event(taskInfo[1], taskInfo[2], taskInfo[3]));
+                            Task event = new Event(taskInfo[2], taskInfo[3], taskInfo[4]);
+                            event.markDone(taskInfo[1].equals("1"));
+                            tasks.add(event);
                             break;
                     }
                     line = br.readLine();
@@ -58,7 +66,7 @@ public class Aerith {
         } catch (FileNotFoundException e) {
             // Create a new save file
             try {
-                File saveFile = new File("./data/save.txt");
+                File saveFile = new File(SAVE_FILE);
                 saveFile.getParentFile().mkdirs();
                 saveFile.createNewFile();
                 return new ArrayList<>(100);
@@ -124,6 +132,7 @@ public class Aerith {
                     // Add to do
                     taskDesc = arr[1].trim();
                     Todo todo = new Todo(taskDesc);
+                    saveTask(todo);
                     tasks.add(todo);
                     System.out.println("✧ I have added a new todo: ✧");
                     System.out.println(todo + "\n");
@@ -144,6 +153,7 @@ public class Aerith {
                     }
 
                     Deadline deadline = getDeadline(parts, taskDesc);
+                    saveTask(deadline);
                     tasks.add(deadline);
                     System.out.println("✧ I have added a new task: ✧");
                     System.out.println(deadline + "\n");
@@ -161,6 +171,7 @@ public class Aerith {
                         throw new InvalidInputException(emptyMessage);
                     }
                     Event event = getEvent(parts, taskDesc);
+                    saveTask(event);
                     tasks.add(event);
                     System.out.println("✧ I have added a new event: ✧");
                     System.out.println(event + "\n");
@@ -178,6 +189,18 @@ public class Aerith {
                 default:
                     throw new InvalidInputException("My apologies, I do not understand what that means.");
             }
+        }
+    }
+
+    private void saveTask(Task task) {
+        try {
+            FileWriter fw = new FileWriter(SAVE_FILE, true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(task.toSaveFormat());
+            bw.newLine();
+            bw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
