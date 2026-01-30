@@ -1,4 +1,10 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -39,21 +45,21 @@ public class Aerith {
                 while (line != null) {
                     String[] taskInfo = line.split(" \\| ");
                     switch (taskInfo[0]) {
-                        case "T":
-                            Task todo = new Todo(taskInfo[2]);
-                            todo.markDone(taskInfo[1].equals("1"));
-                            tasks.add(todo);
-                            break;
-                        case "D":
-                            Task deadline = new Deadline(taskInfo[2], taskInfo[3]);
-                            deadline.markDone(taskInfo[1].equals("1"));
-                            tasks.add(deadline);
-                            break;
-                        case "E":
-                            Task event = new Event(taskInfo[2], taskInfo[3], taskInfo[4]);
-                            event.markDone(taskInfo[1].equals("1"));
-                            tasks.add(event);
-                            break;
+                    case "T":
+                        Task todo = new Todo(taskInfo[2]);
+                        todo.markDone(taskInfo[1].equals("1"));
+                        tasks.add(todo);
+                        break;
+                    case "D":
+                        Task deadline = new Deadline(taskInfo[2], taskInfo[3]);
+                        deadline.markDone(taskInfo[1].equals("1"));
+                        tasks.add(deadline);
+                        break;
+                    case "E":
+                        Task event = new Event(taskInfo[2], taskInfo[3], taskInfo[4]);
+                        event.markDone(taskInfo[1].equals("1"));
+                        tasks.add(event);
+                        break;
                     }
                     line = br.readLine();
                 }
@@ -211,12 +217,12 @@ public class Aerith {
         // Update the data file
         try {
             FileWriter fw = new FileWriter(SAVE_FILE, false);
-            BufferedWriter bw = new BufferedWriter(fw);
-            for (Task task : tasks) {
-                bw.write(task.toSaveFormat());
-                bw.newLine();
+            try (BufferedWriter bw = new BufferedWriter(fw)) {
+                for (Task task : tasks) {
+                    bw.write(task.toSaveFormat());
+                    bw.newLine();
+                }
             }
-            bw.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
