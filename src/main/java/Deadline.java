@@ -1,9 +1,14 @@
-public class Deadline extends Task {
-    protected String deadline;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-    public Deadline(String description, String deadline) {
+public class Deadline extends Task {
+    protected LocalDateTime deadline;
+    boolean hasTime;
+
+    public Deadline(String description, LocalDateTime deadline, boolean hasTime) {
         super(description);
         this.deadline = deadline;
+        this.hasTime = hasTime;
     }
 
     @Override
@@ -13,7 +18,13 @@ public class Deadline extends Task {
 
     @Override
     public String toString() {
+        DateTimeFormatter formatter;
+        if (hasTime) {
+            formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        } else {
+            formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        }
         return "[" + super.getStatusIcon() + "] ⏱ " + super.getDescription()
-                + " (by: " + deadline + ")";
+                + " (by: " + deadline.format(formatter) + ")";
     }
 }
