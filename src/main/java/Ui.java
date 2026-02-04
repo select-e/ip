@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 public class Ui {
     public void showLoadingError() {
         System.out.println("⚠ Something went wrong with the saved data. ⚠");
@@ -15,5 +17,18 @@ public class Ui {
     public void showClosingMessage() {
         System.out.println("✧ I await your return. ✧");
         System.out.println("\n○ ✧ ⚬ .");
+    }
+
+    public void readInput(Parser parser) {
+        Scanner scanner = new Scanner(System.in);
+        String input = scanner.nextLine();
+        while (!input.equals("bye")) {
+            try {
+                parser.handleInput(input);
+            } catch (InvalidInputException e) {
+                System.out.println("⚠ " + e.getMessage() + " ⚠\n");
+            }
+            input = scanner.nextLine();
+        }
     }
 }
