@@ -14,6 +14,7 @@ import java.util.Scanner;
 public class Aerith {
     private ArrayList<Task> tasks;
     private final static String SAVE_FILE = "./data/save.txt";
+    private Storage storage;
     private Ui ui;
     private Parser parser;
 
@@ -23,7 +24,8 @@ public class Aerith {
 
     public Aerith() {
         ui = new Ui();
-        tasks = loadTasks();
+        storage = new Storage();
+        tasks = storage.getTaskList(SAVE_FILE, ui);
         parser = new Parser(tasks);
     }
 
@@ -31,44 +33,5 @@ public class Aerith {
         ui.showOpeningMessage();
         ui.readInput(parser);
         ui.showClosingMessage();
-    }
-
-    private ArrayList<Task> loadTasks() {
-        // Open the save file
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(SAVE_FILE));
-            try {
-                ArrayList<Task> tasks = new ArrayList<>(100);
-                String line = br.readLine();
-
-                while (line != null) {
-                    String[] taskInfo = line.split(" \\| ", 2);
-                    Task task = switch (taskInfo[0]) {
-                    case "T" -> Todo.fromSaveFormat(taskInfo[1]);
-                    case "D" -> Deadline.fromSaveFormat(taskInfo[1]);
-                    case "E" -> Event.fromSaveFormat(taskInfo[1]);
-                    default -> null;
-                    };
-                    tasks.add(task);
-                    line = br.readLine();
-                }
-                br.close();
-                return tasks;
-            } catch (IOException e) {
-                ui.showLoadingError();
-            }
-        } catch (FileNotFoundException e) {
-            // Create a new save file
-            try {
-                File saveFile = new File(SAVE_FILE);
-                saveFile.getParentFile().mkdirs();
-                saveFile.createNewFile();
-                return new ArrayList<>(100);
-            } catch (IOException ioException) {
-                ui.showSavingError();
-                ioException.printStackTrace();
-            }
-        }
-        return null;
     }
 }
