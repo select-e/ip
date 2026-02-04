@@ -15,7 +15,7 @@ public class Aerith {
         ui = new Ui();
         storage = new Storage();
         taskList = storage.getTaskList(SAVE_FILE, ui);
-        parser = new Parser(taskList);
+        parser = new Parser(taskList, ui);
     }
 
     private void run() {

@@ -1,11 +1,20 @@
 import java.io.*;
 
+/**
+ * Deals with loading tasks from the file and saving tasks in the file.
+ */
 public class Storage {
     String filePath;
 
+    /**
+     * Loads the saved tasks.
+     * @param filePath The path to the save file
+     * @param ui The Ui instance
+     * @return A TaskList containing the loaded tasks
+     */
     public TaskList getTaskList(String filePath, Ui ui) {
         this.filePath = filePath;
-        TaskList taskList = new TaskList(this);
+        TaskList taskList = new TaskList(this, ui);
         // Open the save file
         try {
             BufferedReader br = new BufferedReader(new FileReader(filePath));
@@ -44,9 +53,12 @@ public class Storage {
         return null;
     }
 
+    /**
+     * Updates the save file with the current list of tasks.
+     * @param taskList The task list
+     */
     public void updateTasks(TaskList taskList)
     {
-        // Update the data file
         try {
             FileWriter fw = new FileWriter(filePath, false);
             try (BufferedWriter bw = new BufferedWriter(fw)) {
@@ -55,6 +67,22 @@ public class Storage {
                     bw.newLine();
                 }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Writes a new task to the data file.
+     * @param task The new task
+     */
+    public void saveNewTask(Task task) {
+        try {
+            FileWriter fw = new FileWriter(filePath, true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(task.toSaveFormat());
+            bw.newLine();
+            bw.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
