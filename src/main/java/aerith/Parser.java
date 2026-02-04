@@ -1,3 +1,10 @@
+package aerith;
+
+import aerith.exception.InvalidInputException;
+import aerith.task.Deadline;
+import aerith.task.Event;
+import aerith.task.Todo;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -204,7 +211,7 @@ public class Parser {
     /**
      * Parses the user's input and returns an event.
      * @param parts An array of string parts of the command body, after "event", previously separated by "/"
-     * @return The new Event
+     * @return The new aerith.Event
      * @throws InvalidInputException
      */
     private static Event getEvent(String[] parts) throws InvalidInputException {

@@ -1,4 +1,4 @@
-# Aerith User Guide
+# aerith.Aerith User Guide
 
 // Product screenshot goes here
 
