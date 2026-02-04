@@ -1,3 +1,10 @@
+package aerith;
+
+import aerith.task.Deadline;
+import aerith.task.Event;
+import aerith.task.Task;
+import aerith.task.Todo;
+
 import java.io.*;
 
 /**
@@ -9,8 +16,8 @@ public class Storage {
     /**
      * Loads the saved tasks.
      * @param filePath The path to the save file
-     * @param ui The Ui instance
-     * @return A TaskList containing the loaded tasks
+     * @param ui The aerith.Ui instance
+     * @return A aerith.TaskList containing the loaded tasks
      */
     public TaskList getTaskList(String filePath, Ui ui) {
         this.filePath = filePath;

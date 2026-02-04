@@ -1,6 +1,6 @@
-import java.time.LocalDateTime;
+package aerith.task;
 
-public class Event extends Task{
+public class Event extends Task {
     private String from;
     private String to;
 
