@@ -46,24 +46,14 @@ public class Aerith {
                 String line = br.readLine();
 
                 while (line != null) {
-                    String[] taskInfo = line.split(" \\| ");
-                    switch (taskInfo[0]) {
-                    case "T":
-                        Task todo = new Todo(taskInfo[2]);
-                        todo.markDone(taskInfo[1].equals("1"));
-                        tasks.add(todo);
-                        break;
-                    case "D":
-                        Task deadline = new Deadline(taskInfo[2], LocalDateTime.parse(taskInfo[3]), false);
-                        deadline.markDone(taskInfo[1].equals("1"));
-                        tasks.add(deadline);
-                        break;
-                    case "E":
-                        Task event = new Event(taskInfo[2], taskInfo[3], taskInfo[4]);
-                        event.markDone(taskInfo[1].equals("1"));
-                        tasks.add(event);
-                        break;
-                    }
+                    String[] taskInfo = line.split(" \\| ", 2);
+                    Task task = switch (taskInfo[0]) {
+                    case "T" -> Todo.fromSaveFormat(taskInfo[1]);
+                    case "D" -> Deadline.fromSaveFormat(taskInfo[1]);
+                    case "E" -> Event.fromSaveFormat(taskInfo[1]);
+                    default -> null;
+                    };
+                    tasks.add(task);
                     line = br.readLine();
                 }
                 br.close();
@@ -266,10 +256,10 @@ public class Aerith {
                  dateString = cmd[1].trim() + " 12:00";
              }
              try {
-                 formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+                 formatter = DateTimeFormatter.ofPattern("d-M-yyyy HH:mm");
                  date = LocalDateTime.parse(dateString, formatter);
              } catch (DateTimeParseException e) {
-                 throw new InvalidInputException("Please enter a valid date format.");
+                 throw new InvalidInputException("Please enter a date in the format \"dd-MM-yyyy\" or \"dd-MM-yyyy HH:ss\".");
              }
              return new Deadline(taskDesc, date, hasTime);
         } else {
