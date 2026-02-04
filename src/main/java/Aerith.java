@@ -1,4 +1,13 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -37,24 +46,14 @@ public class Aerith {
                 String line = br.readLine();
 
                 while (line != null) {
-                    String[] taskInfo = line.split(" \\| ");
-                    switch (taskInfo[0]) {
-                        case "T":
-                            Task todo = new Todo(taskInfo[2]);
-                            todo.markDone(taskInfo[1].equals("1"));
-                            tasks.add(todo);
-                            break;
-                        case "D":
-                            Task deadline = new Deadline(taskInfo[2], taskInfo[3]);
-                            deadline.markDone(taskInfo[1].equals("1"));
-                            tasks.add(deadline);
-                            break;
-                        case "E":
-                            Task event = new Event(taskInfo[2], taskInfo[3], taskInfo[4]);
-                            event.markDone(taskInfo[1].equals("1"));
-                            tasks.add(event);
-                            break;
-                    }
+                    String[] taskInfo = line.split(" \\| ", 2);
+                    Task task = switch (taskInfo[0]) {
+                    case "T" -> Todo.fromSaveFormat(taskInfo[1]);
+                    case "D" -> Deadline.fromSaveFormat(taskInfo[1]);
+                    case "E" -> Event.fromSaveFormat(taskInfo[1]);
+                    default -> null;
+                    };
+                    tasks.add(task);
                     line = br.readLine();
                 }
                 br.close();
@@ -91,105 +90,180 @@ public class Aerith {
             String taskDesc;
             String[] parts;
             switch(arr[0]) {
-                case "mark":
-                    if (arr.length < 2) {
-                        throw new InvalidInputException("Please provide the task number you want to mark as done.");
-                    }
-                    try {
-                        taskNum = Integer.parseInt(arr[1]);
-                    } catch (NumberFormatException e) {
-                        throw new InvalidInputException("Please specify tasks by their number.");
-                    }
-                    if (taskNum <= 0 || taskNum > tasks.size()) {
-                        throw new InvalidInputException("Please enter a valid task number.");
-                    }
-                    tasks.get(taskNum - 1).markDone(true);
-                    updateTasks();
-                    System.out.println("✧ I have marked this task as done: ✧");
-                    System.out.println(taskNum + ". " + tasks.get(taskNum - 1) + "\n");
-                    break;
-                case "unmark":
-                    if (arr.length < 2) {
-                        throw new InvalidInputException("Please provide the task number you want to mark as not done yet.");
-                    }
-                    try {
-                        taskNum = Integer.parseInt(arr[1]);
-                    } catch (NumberFormatException e) {
-                        throw new InvalidInputException("Please specify tasks by their number.");
-                    }
-                    if (taskNum <= 0 || taskNum > tasks.size()) {
-                        throw new InvalidInputException("Please enter a valid task number.");
-                    }
-                    tasks.get(taskNum - 1).markDone(false);
-                    updateTasks();
-                    System.out.println("✧ I have marked this task as not done yet: ✧");
-                    System.out.println(taskNum + ". " + tasks.get(taskNum - 1) + "\n");
-                    break;
-                case "todo":
-                    if (arr.length < 2 || arr[1].isBlank()) {
-                        throw new InvalidInputException("The description of a todo cannot be empty.");
-                    }
+            case "mark":
+                if (arr.length < 2) {
+                    throw new InvalidInputException("Please provide the task number you want to mark as done.");
+                }
+                markTask(arr[1]);
+                break;
+            case "unmark":
+                if (arr.length < 2) {
+                    throw new InvalidInputException("Please provide the task number you want to mark as not done yet.");
+                }
+                unmarkTask(arr[1]);
+                break;
+            case "todo":
+                if (arr.length < 2 || arr[1].isBlank()) {
+                    throw new InvalidInputException("The description of a todo cannot be empty.");
+                }
+                addTodo(arr[1]);
+                break;
+            case "deadline":
+                if (arr.length < 2 || arr[1].isBlank()) {
+                    throw new InvalidInputException("The description of a deadline task cannot be empty.");
+                }
+                addDeadline(arr[1]);
+                break;
+            case "event":
+                String emptyMessage = "The description of an event cannot be empty.";
+                if (arr.length < 2 || arr[1].isBlank()) {
+                    throw new InvalidInputException(emptyMessage);
+                }
 
-                    // Add to do
-                    taskDesc = arr[1].trim();
-                    Todo todo = new Todo(taskDesc);
-                    saveNewTask(todo);
-                    tasks.add(todo);
-                    System.out.println("✧ I have added a new todo: ✧");
-                    System.out.println(todo + "\n");
-                    break;
-                case "deadline":
-                    String emptyDescMessage = "The description of a deadline task cannot be empty.";
-
-                    if (arr.length < 2 || arr[1].isBlank()) {
-                        throw new InvalidInputException(emptyDescMessage);
-                    }
-
-                    // Add deadline task
-                    parts = arr[1].split("/");
-                    taskDesc = parts[0].trim();
-
-                    if (taskDesc.isBlank()) {
-                        throw new InvalidInputException(emptyDescMessage);
-                    }
-
-                    Deadline deadline = getDeadline(parts, taskDesc);
-                    saveNewTask(deadline);
-                    tasks.add(deadline);
-                    System.out.println("✧ I have added a new task: ✧");
-                    System.out.println(deadline + "\n");
-                    break;
-                case "event":
-                    String emptyMessage = "The description of an event cannot be empty.";
-                    if (arr.length < 2 || arr[1].isBlank()) {
-                        throw new InvalidInputException(emptyMessage);
-                    }
-
-                    // Add event
-                    parts = arr[1].split("/");
-                    taskDesc = parts[0].trim();
-                    if (taskDesc.isBlank()) {
-                        throw new InvalidInputException(emptyMessage);
-                    }
-                    Event event = getEvent(parts, taskDesc);
-                    saveNewTask(event);
-                    tasks.add(event);
-                    System.out.println("✧ I have added a new event: ✧");
-                    System.out.println(event + "\n");
-                    break;
-                case "delete":
-                    if (arr.length < 2 || arr[1].isBlank()) {
-                        throw new InvalidInputException("Please specify the task you want to remove.");
-                    }
-                    taskNum = Integer.parseInt(arr[1]);
-                    Task task = tasks.get(taskNum - 1);
-                    tasks.remove(task);
-                    System.out.println("✧ I have removed this task: ✧");
-                    System.out.println(task + "\n");
-                    break;
-                default:
-                    throw new InvalidInputException("My apologies, I do not understand what that means.");
+                // Add event
+                parts = arr[1].split("/");
+                taskDesc = parts[0].trim();
+                if (taskDesc.isBlank()) {
+                    throw new InvalidInputException(emptyMessage);
+                }
+                Event event = getEvent(parts, taskDesc);
+                saveNewTask(event);
+                tasks.add(event);
+                System.out.println("✧ I have added a new event: ✧");
+                System.out.println(event + "\n");
+                break;
+            case "delete":
+                if (arr.length < 2 || arr[1].isBlank()) {
+                    throw new InvalidInputException("Please specify the task you want to remove.");
+                }
+                taskNum = Integer.parseInt(arr[1]);
+                Task task = tasks.get(taskNum - 1);
+                tasks.remove(task);
+                System.out.println("✧ I have removed this task: ✧");
+                System.out.println(task + "\n");
+                break;
+            default:
+                throw new InvalidInputException("My apologies, I do not understand what that means.");
             }
+        }
+    }
+
+    /**
+     * Marks a task as done and displays the result.
+     * @param command The user-inputted task number as a string
+     * @throws InvalidInputException
+     */
+    private void markTask(String command) throws InvalidInputException {
+        int taskNum;
+        try {
+            // Parse the command to int
+            taskNum = Integer.parseInt(command);
+        } catch (NumberFormatException e) {
+            throw new InvalidInputException("Please specify tasks by their number.");
+        }
+
+        // Throw an exception if the task number is invalid 
+        if (taskNum <= 0 || taskNum > tasks.size()) {
+            throw new InvalidInputException("Please enter a valid task number.");
+        }
+
+        tasks.get(taskNum - 1).markDone(true);
+        updateTasks();
+
+        System.out.println("✧ I have marked this task as done: ✧");
+        System.out.println(taskNum + ". " + tasks.get(taskNum - 1) + "\n");
+    }
+
+    /**
+     * Marks a task as not done yet and displays the result.
+     * @param command The user-inputted task number as a string
+     * @throws InvalidInputException
+     */
+    private void unmarkTask(String command) throws InvalidInputException {
+        int taskNum;
+        try {
+            taskNum = Integer.parseInt(command);
+        } catch (NumberFormatException e) {
+            throw new InvalidInputException("Please specify tasks by their number.");
+        }
+
+        // Throw an exception if the task number is invalid
+        if (taskNum <= 0 || taskNum > tasks.size()) {
+            throw new InvalidInputException("Please enter a valid task number.");
+        }
+
+        tasks.get(taskNum - 1).markDone(false);
+        updateTasks();
+
+        System.out.println("✧ I have marked this task as not done yet: ✧");
+        System.out.println(taskNum + ". " + tasks.get(taskNum - 1) + "\n");
+    }
+
+    /**
+     * Adds a todo to the list and displays the result.
+     * @param command The user-inputted description
+     */
+    private void addTodo(String command) {
+        String taskDesc = command.trim();
+        Todo todo = new Todo(taskDesc);
+        saveNewTask(todo);
+        tasks.add(todo);
+        System.out.println("✧ I have added a new todo: ✧");
+        System.out.println(todo + "\n");
+    }
+
+    /**
+     * Adds a deadline task to the list and displays the result.
+     * @param command The user-inputted description and deadline
+     * @throws InvalidInputException
+     */
+    private void addDeadline(String command) throws InvalidInputException {
+        String[] parts = command.split("/");
+        String taskDesc = parts[0].trim();
+
+        // Handle the case where there is no description before the "/"
+        if (taskDesc.isBlank()) {
+            throw new InvalidInputException("The description of an event cannot be empty.");
+        }
+
+        Deadline deadline = getDeadline(parts, taskDesc);
+        saveNewTask(deadline);
+        tasks.add(deadline);
+        System.out.println("✧ I have added a new task: ✧");
+        System.out.println(deadline + "\n");
+    }
+
+    private static Deadline getDeadline(String[] parts, String taskDesc) throws InvalidInputException {
+        if (parts.length < 2) {
+            throw new InvalidInputException("The task requires a deadline. Please specify it using the /by command.");
+        }
+
+        String[] cmd = parts[1].split(" ", 2);
+
+        if (cmd.length != 2) {
+            throw new InvalidInputException("The deadline of a deadline task cannot be empty.");
+        }
+
+        // Get date
+        if (cmd[0].equals("by")) {
+            DateTimeFormatter formatter;
+            LocalDateTime date;
+            boolean hasTime = false;
+            String dateString = cmd[1];
+             if (dateString.contains(" ")) {
+                 hasTime = true;
+             } else {
+                 dateString = cmd[1].trim() + " 12:00";
+             }
+             try {
+                 formatter = DateTimeFormatter.ofPattern("d-M-yyyy HH:mm");
+                 date = LocalDateTime.parse(dateString, formatter);
+             } catch (DateTimeParseException e) {
+                 throw new InvalidInputException("Please enter a date in the format \"dd-MM-yyyy\" or \"dd-MM-yyyy HH:ss\".");
+             }
+             return new Deadline(taskDesc, date, hasTime);
+        } else {
+            throw new InvalidInputException("Please enter a deadline using the /by command.");
         }
     }
 
@@ -211,34 +285,15 @@ public class Aerith {
         // Update the data file
         try {
             FileWriter fw = new FileWriter(SAVE_FILE, false);
-            BufferedWriter bw = new BufferedWriter(fw);
-            for (Task task : tasks) {
-                bw.write(task.toSaveFormat());
-                bw.newLine();
+            try (BufferedWriter bw = new BufferedWriter(fw)) {
+                for (Task task : tasks) {
+                    bw.write(task.toSaveFormat());
+                    bw.newLine();
+                }
             }
-            bw.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private static Deadline getDeadline(String[] parts, String taskDesc) throws InvalidInputException {
-        if (parts.length < 2) {
-            throw new InvalidInputException("The task requires a deadline. Please specify it using the /by command.");
-        }
-
-        String[] cmd = parts[1].split(" ", 2);
-
-        if (cmd.length != 2) {
-            throw new InvalidInputException("The deadline of a deadline task cannot be empty.");
-        }
-
-        // Get date
-        String date = "";
-        if (cmd[0].equals("by")) {
-            date = cmd[1].trim();
-        }
-        return new Deadline(taskDesc, date);
     }
 
     private static Event getEvent(String[] parts, String taskDesc) throws InvalidInputException {
