@@ -14,30 +14,36 @@ import java.util.Scanner;
 public class Aerith {
     private ArrayList<Task> tasks;
     private final static String SAVE_FILE = "./data/save.txt";
+    private Ui ui;
 
     public static void main(String[] args) {
+        new Aerith().run();
+    }
+
+    public Aerith() {
+        ui = new Ui();
+        tasks = loadTasks();
+    }
+
+    private void run() {
+        ui.showOpeningMessage();
+
+        // TODO: Put this in Ui with a reference to the Parser.
         Scanner scanner = new Scanner(System.in);
-        Aerith aerith = new Aerith();
-        aerith.tasks = loadTasks();
-
-        System.out.println("\n. ⚬ ✧ ○\n");
-        System.out.println("✧ Greetings mage, I am Aerith! ✧\n");
-
         String input = scanner.nextLine();
         while (!input.equals("bye")) {
             try {
-                aerith.handleInput(input);
+                handleInput(input);
             } catch (InvalidInputException e) {
                 System.out.println("⚠ " + e.getMessage() + " ⚠\n");
             }
             input = scanner.nextLine();
         }
 
-        System.out.println("✧ I await your return. ✧");
-        System.out.println("\n○ ✧ ⚬ .");
+        ui.showClosingMessage();
     }
 
-    private static ArrayList<Task> loadTasks() {
+    private ArrayList<Task> loadTasks() {
         // Open the save file
         try {
             BufferedReader br = new BufferedReader(new FileReader(SAVE_FILE));
@@ -59,7 +65,7 @@ public class Aerith {
                 br.close();
                 return tasks;
             } catch (IOException e) {
-                System.out.println("⚠ Something went wrong with the saved data. ⚠");
+                ui.showLoadingError();
             }
         } catch (FileNotFoundException e) {
             // Create a new save file
@@ -69,7 +75,7 @@ public class Aerith {
                 saveFile.createNewFile();
                 return new ArrayList<>(100);
             } catch (IOException ioException) {
-                System.out.println("⚠ Something went wrong while trying to create the file. ⚠");
+                ui.showSavingError();
                 ioException.printStackTrace();
             }
         }
@@ -139,6 +145,7 @@ public class Aerith {
                 taskNum = Integer.parseInt(arr[1]);
                 Task task = tasks.get(taskNum - 1);
                 tasks.remove(task);
+                updateTasks();
                 System.out.println("✧ I have removed this task: ✧");
                 System.out.println(task + "\n");
                 break;
