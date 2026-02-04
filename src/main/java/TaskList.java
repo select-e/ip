@@ -1,0 +1,77 @@
+import java.util.ArrayList;
+
+/**
+ * Handles the list of tasks.
+ */
+public class TaskList {
+    ArrayList<Task> tasks;
+    Storage storage;
+    Ui ui;
+
+    public TaskList(Storage storage, Ui ui) {
+        tasks = new ArrayList<>(100);
+        this.storage = storage;
+        this.ui = ui;
+    }
+
+    /**
+     * Adds a new task to the list.
+     * @param task The new task
+     */
+    public void addTask(Task task) {
+        tasks.add(task);
+        storage.saveNewTask(task);
+    }
+
+    /**
+     * Returns the length of the list.
+     * @return The number of tasks in the list
+     */
+    public int getLength() {
+        return tasks.size();
+    }
+
+    /**
+     * Returns a task specified by its index
+     * @param index The index of the task
+     * @return The task at that index
+     */
+    public Task getTask(int index) {
+        return tasks.get(index);
+    }
+
+    /**
+     * Removes a task at a specified index.
+     * @param index The index of the task
+     */
+    public void removeTask(int index) {
+        Task task = tasks.get(index);
+        tasks.remove(index);
+        storage.updateTasks(this);
+        ui.displayRemovedTask(task);
+    }
+
+    /**
+     * Marks a task as done.
+     * @param index The true task index
+     * @throws InvalidInputException
+     */
+    public void markTask(int index) throws InvalidInputException {
+        Task task = tasks.get(index);
+        task.markDone(true);
+        storage.updateTasks(this);
+        ui.displayMarkedTask(index + 1, task);
+    }
+
+    /**
+     * Marks a task as not done yet.
+     * @param index The true task index
+     * @throws InvalidInputException
+     */
+    public void unmarkTask(int index) throws InvalidInputException {
+        Task task = tasks.get(index);
+        task.markDone(false);
+        storage.updateTasks(this);
+        ui.displayUnmarkedTask(index + 1, task);
+    }
+}
