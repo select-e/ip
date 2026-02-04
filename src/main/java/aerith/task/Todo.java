@@ -7,7 +7,7 @@ public class Todo extends Task {
 
     @Override
     public String toSaveFormat() {
-        // T | isDone | deadline
+        // T | isDone | description
         return String.format("T | %d | %s", super.isDone ? 1 : 0, super.description);
     }
 
@@ -26,5 +26,13 @@ public class Todo extends Task {
     @Override
     public String toString() {
         return "[" + super.getStatusIcon() + "] ✎ " + super.getDescription();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Todo other)) {
+            return false;
+        }
+        return other.description.equals(super.description) && other.isDone == super.isDone;
     }
 }
