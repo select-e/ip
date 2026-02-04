@@ -1,5 +1,5 @@
 todo todo task
-deadline deadline task /by 17 june
+deadline deadline task /by 17-06-2026 23:59
 event event task /from today 6pm /to tomorrow 6am
 list
 mark 1

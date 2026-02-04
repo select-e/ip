@@ -7,14 +7,14 @@
 [ ] ✎ todo task
 
 ✧ I have added a new task: ✧
-[ ] ⏱ deadline task (by: 17 june)
+[ ] ⏱ deadline task (by: 17 Jun 2026, 11:59 pm)
 
 ✧ I have added a new event: ✧
 [ ] @ event task (from: today 6pm to: tomorrow 6am)
 
 ✧ ✧ ✧
 1. [ ] ✎ todo task
-2. [ ] ⏱ deadline task (by: 17 june)
+2. [ ] ⏱ deadline task (by: 17 Jun 2026, 11:59 pm)
 3. [ ] @ event task (from: today 6pm to: tomorrow 6am)
 ✧ ✧ ✧
 
@@ -28,7 +28,7 @@
 [ ] ✎ todo task
 
 ✧ ✧ ✧
-1. [ ] ⏱ deadline task (by: 17 june)
+1. [ ] ⏱ deadline task (by: 17 Jun 2026, 11:59 pm)
 2. [ ] @ event task (from: today 6pm to: tomorrow 6am)
 ✧ ✧ ✧
 
