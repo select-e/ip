@@ -1,13 +1,16 @@
 import java.io.*;
-import java.util.ArrayList;
 
 public class Storage {
-    public ArrayList<Task> getTaskList(String filePath, Ui ui) {
+    String filePath;
+
+    public TaskList getTaskList(String filePath, Ui ui) {
+        this.filePath = filePath;
+        TaskList taskList = new TaskList(this);
         // Open the save file
         try {
             BufferedReader br = new BufferedReader(new FileReader(filePath));
             try {
-                ArrayList<Task> tasks = new ArrayList<>(100);
+
                 String line = br.readLine();
 
                 while (line != null) {
@@ -18,11 +21,11 @@ public class Storage {
                         case "E" -> Event.fromSaveFormat(taskInfo[1]);
                         default -> null;
                     };
-                    tasks.add(task);
+                    taskList.addTask(task);
                     line = br.readLine();
                 }
                 br.close();
-                return tasks;
+                return taskList;
             } catch (IOException e) {
                 ui.showLoadingError();
             }
@@ -32,12 +35,28 @@ public class Storage {
                 File saveFile = new File(filePath);
                 saveFile.getParentFile().mkdirs();
                 saveFile.createNewFile();
-                return new ArrayList<>(100);
+                return taskList;
             } catch (IOException ioException) {
                 ui.showSavingError();
                 ioException.printStackTrace();
             }
         }
         return null;
+    }
+
+    public void updateTasks(TaskList taskList)
+    {
+        // Update the data file
+        try {
+            FileWriter fw = new FileWriter(filePath, false);
+            try (BufferedWriter bw = new BufferedWriter(fw)) {
+                for (int i = 0; i < taskList.getLength(); i++) {
+                    bw.write(taskList.getTask(i).toSaveFormat());
+                    bw.newLine();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -4,13 +4,12 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 
 public class Parser {
-    private ArrayList<Task> tasks;
+    private TaskList tasks;
     private final static String SAVE_FILE = "./data/save.txt";
 
-    public Parser(ArrayList<Task> tasks) {
+    public Parser(TaskList tasks) {
         this.tasks = tasks;
     }
 
@@ -18,8 +17,8 @@ public class Parser {
         if (input.equals("list")) {
             // List items
             System.out.println("✧ ✧ ✧");
-            for (int i = 0; i < tasks.size(); i++) {
-                System.out.println((i + 1) + ". " + tasks.get(i));
+            for (int i = 0; i < tasks.getLength(); i++) {
+                System.out.println((i + 1) + ". " + tasks.getTask(i));
             }
             System.out.println("✧ ✧ ✧\n");
         } else {
@@ -32,13 +31,13 @@ public class Parser {
                     if (arr.length < 2) {
                         throw new InvalidInputException("Please provide the task number you want to mark as done.");
                     }
-                    markTask(arr[1]);
+                    tasks.markTask(arr[1]);
                     break;
                 case "unmark":
                     if (arr.length < 2) {
                         throw new InvalidInputException("Please provide the task number you want to mark as not done yet.");
                     }
-                    unmarkTask(arr[1]);
+                    tasks.unmarkTask(arr[1]);
                     break;
                 case "todo":
                     if (arr.length < 2 || arr[1].isBlank()) {
@@ -66,7 +65,7 @@ public class Parser {
                     }
                     Event event = getEvent(parts, taskDesc);
                     saveNewTask(event);
-                    tasks.add(event);
+                    tasks.addTask(event);
                     System.out.println("✧ I have added a new event: ✧");
                     System.out.println(event + "\n");
                     break;
@@ -75,67 +74,12 @@ public class Parser {
                         throw new InvalidInputException("Please specify the task you want to remove.");
                     }
                     taskNum = Integer.parseInt(arr[1]);
-                    Task task = tasks.get(taskNum - 1);
-                    tasks.remove(task);
-                    updateTasks();
-                    System.out.println("✧ I have removed this task: ✧");
-                    System.out.println(task + "\n");
+                    tasks.removeTask(taskNum - 1);
                     break;
                 default:
                     throw new InvalidInputException("My apologies, I do not understand what that means.");
             }
         }
-    }
-
-    /**
-     * Marks a task as done and displays the result.
-     * @param command The user-inputted task number as a string
-     * @throws InvalidInputException
-     */
-    private void markTask(String command) throws InvalidInputException {
-        int taskNum;
-        try {
-            // Parse the command to int
-            taskNum = Integer.parseInt(command);
-        } catch (NumberFormatException e) {
-            throw new InvalidInputException("Please specify tasks by their number.");
-        }
-
-        // Throw an exception if the task number is invalid
-        if (taskNum <= 0 || taskNum > tasks.size()) {
-            throw new InvalidInputException("Please enter a valid task number.");
-        }
-
-        tasks.get(taskNum - 1).markDone(true);
-        updateTasks();
-
-        System.out.println("✧ I have marked this task as done: ✧");
-        System.out.println(taskNum + ". " + tasks.get(taskNum - 1) + "\n");
-    }
-
-    /**
-     * Marks a task as not done yet and displays the result.
-     * @param command The user-inputted task number as a string
-     * @throws InvalidInputException
-     */
-    private void unmarkTask(String command) throws InvalidInputException {
-        int taskNum;
-        try {
-            taskNum = Integer.parseInt(command);
-        } catch (NumberFormatException e) {
-            throw new InvalidInputException("Please specify tasks by their number.");
-        }
-
-        // Throw an exception if the task number is invalid
-        if (taskNum <= 0 || taskNum > tasks.size()) {
-            throw new InvalidInputException("Please enter a valid task number.");
-        }
-
-        tasks.get(taskNum - 1).markDone(false);
-        updateTasks();
-
-        System.out.println("✧ I have marked this task as not done yet: ✧");
-        System.out.println(taskNum + ". " + tasks.get(taskNum - 1) + "\n");
     }
 
     /**
@@ -146,7 +90,7 @@ public class Parser {
         String taskDesc = command.trim();
         Todo todo = new Todo(taskDesc);
         saveNewTask(todo);
-        tasks.add(todo);
+        tasks.addTask(todo);
         System.out.println("✧ I have added a new todo: ✧");
         System.out.println(todo + "\n");
     }
@@ -167,7 +111,7 @@ public class Parser {
 
         Deadline deadline = getDeadline(parts, taskDesc);
         saveNewTask(deadline);
-        tasks.add(deadline);
+        tasks.addTask(deadline);
         System.out.println("✧ I have added a new task: ✧");
         System.out.println(deadline + "\n");
     }
@@ -213,22 +157,6 @@ public class Parser {
             bw.write(task.toSaveFormat());
             bw.newLine();
             bw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void updateTasks()
-    {
-        // Update the data file
-        try {
-            FileWriter fw = new FileWriter(SAVE_FILE, false);
-            try (BufferedWriter bw = new BufferedWriter(fw)) {
-                for (Task task : tasks) {
-                    bw.write(task.toSaveFormat());
-                    bw.newLine();
-                }
-            }
         } catch (IOException e) {
             e.printStackTrace();
         }

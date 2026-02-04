@@ -1,18 +1,7 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class Aerith {
-    private ArrayList<Task> tasks;
+    private TaskList taskList;
     private final static String SAVE_FILE = "./data/save.txt";
     private Storage storage;
     private Ui ui;
@@ -25,8 +14,8 @@ public class Aerith {
     public Aerith() {
         ui = new Ui();
         storage = new Storage();
-        tasks = storage.getTaskList(SAVE_FILE, ui);
-        parser = new Parser(tasks);
+        taskList = storage.getTaskList(SAVE_FILE, ui);
+        parser = new Parser(taskList);
     }
 
     private void run() {
