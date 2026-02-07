@@ -3,6 +3,9 @@ package aerith.task;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * A deadline task, containing a date/time.
+ */
 public class Deadline extends Task {
     protected LocalDateTime deadline;
     boolean hasTime;

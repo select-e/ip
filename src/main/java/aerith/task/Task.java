@@ -1,5 +1,8 @@
 package aerith.task;
 
+/**
+ * The blueprint for a task object.
+ */
 public abstract class Task {
     protected String description;
     protected boolean isDone;
@@ -9,18 +12,31 @@ public abstract class Task {
         this.isDone = false;
     }
 
+    /**
+     * Returns "X" if the task is done and " " otherwise.
+     */
     public String getStatusIcon() {
         return (isDone ? "X" : " "); // mark done task with X
     }
 
+    /**
+     * Returns the description of the task.
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * Sets the status of the task to done or not done.
+     * @param value The new value to set to.
+     */
     public void markDone(boolean value) {
         isDone = value;
     }
 
+    /**
+     * Returns the task as a string suitable to be placed in a text file.
+     */
     public abstract String toSaveFormat();
 
     @Override

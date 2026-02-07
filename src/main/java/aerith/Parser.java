@@ -151,10 +151,10 @@ public class Parser {
 
     /**
      * Parses the user input and returns a deadline task.
-     * @param parts An array of string parts of the command body, after "deadline", previously separated by "/"
-     * @param taskDesc The task description
-     * @return A new deadline task
-     * @throws InvalidInputException
+     * @param parts An array of string parts of the command body, after "deadline", previously separated by "/".
+     * @param taskDesc The task description.
+     * @return A new deadline task.
+     * @throws InvalidInputException If deadline is missing or format is invalid.
      */
     private static Deadline getDeadline(String[] parts, String taskDesc) throws InvalidInputException {
         if (parts.length < 2) {

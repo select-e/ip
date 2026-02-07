@@ -1,6 +1,5 @@
 package aerith;
 
-import aerith.exception.InvalidInputException;
 import aerith.task.Task;
 
 import java.util.ArrayList;
@@ -59,9 +58,8 @@ public class TaskList {
     /**
      * Marks a task as done.
      * @param index The true task index
-     * @throws InvalidInputException
      */
-    public void markTask(int index) throws InvalidInputException {
+    public void markTask(int index) {
         Task task = tasks.get(index);
         task.markDone(true);
         storage.updateTasks(this);
@@ -71,9 +69,8 @@ public class TaskList {
     /**
      * Marks a task as not done yet.
      * @param index The true task index
-     * @throws InvalidInputException
      */
-    public void unmarkTask(int index) throws InvalidInputException {
+    public void unmarkTask(int index) {
         Task task = tasks.get(index);
         task.markDone(false);
         storage.updateTasks(this);

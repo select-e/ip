@@ -1,5 +1,8 @@
 package aerith;
 
+/**
+ * The starting point of the program.
+ */
 public class Aerith {
     private TaskList taskList;
     private final static String SAVE_FILE = "./data/save.txt";
@@ -18,13 +21,20 @@ public class Aerith {
         parser = new Parser(taskList, ui);
     }
 
+    /**
+     * Run the program.
+     */
     private void run() {
         ui.showOpeningMessage();
         ui.readInput(parser);
         ui.showClosingMessage();
     }
 
-    // Visible for testing
+    /**
+     * For testing.
+     * Returns the parser instance.
+     * @return the parser tied to this instance of Aerith
+     */
     Parser getParser() {
         return parser;
     }
