@@ -17,7 +17,6 @@ import aerith.task.Todo;
  */
 public class Parser {
     private final TaskList taskList;
-    private final static String SAVE_FILE = "./data/save.txt";
     private final Ui ui;
 
     public Parser(TaskList taskList, Ui ui) {
@@ -189,7 +188,8 @@ public class Parser {
                 formatter = DateTimeFormatter.ofPattern("d-M-yyyy HH:mm");
                 date = LocalDateTime.parse(dateString, formatter);
             } catch (DateTimeParseException e) {
-                throw new InvalidInputException("Please enter a date in the format \"dd-MM-yyyy\" or \"dd-MM-yyyy HH:ss\".");
+                throw new InvalidInputException("Please enter a date in the format "
+                        + "\"dd-MM-yyyy\" or \"dd-MM-yyyy HH:ss\".");
             }
             return new Deadline(taskDesc, date, hasTime);
         } else {
@@ -231,10 +231,12 @@ public class Parser {
         }
 
         if (from.isBlank()) {
-            throw new InvalidInputException("The event requires a starting date/time. Please specify it using the /from command.");
+            throw new InvalidInputException("The event requires a starting date/time. "
+                    + "Please specify it using the /from command.");
         }
         if (to.isBlank()) {
-            throw new InvalidInputException("The event requires an ending date/time. Please specify it using the /to command.");
+            throw new InvalidInputException("The event requires an ending date/time. "
+                    + "Please specify it using the /to command.");
         }
 
         String taskDesc = parts[0].trim();

@@ -7,15 +7,11 @@ import aerith.exception.StorageException;
  */
 
 public class Aerith {
+    private static final String SAVE_FILE = "./data/save.txt";
     private TaskList taskList;
-    private final static String SAVE_FILE = "./data/save.txt";
     private Storage storage;
     private Ui ui;
     private Parser parser;
-
-    public static void main(String[] args) {
-        new Aerith().run();
-    }
 
     public Aerith() {
         ui = new Ui();
@@ -26,6 +22,10 @@ public class Aerith {
             ui.showExceptionMessage(e);
         }
         parser = new Parser(taskList, ui);
+    }
+
+    public static void main(String[] args) {
+        new Aerith().run();
     }
 
     /**

@@ -9,9 +9,9 @@ import aerith.task.Task;
  * Handles the list of tasks.
  */
 public class TaskList {
-    ArrayList<Task> tasks;
-    Storage storage;
-    Ui ui;
+    private final ArrayList<Task> tasks;
+    private final Storage storage;
+    private final Ui ui;
 
     public TaskList(Storage storage, Ui ui) {
         tasks = new ArrayList<>(100);
