@@ -25,7 +25,7 @@ public class TaskList {
      */
     public void addTask(Task task) throws StorageException {
         tasks.add(task);
-        storage.saveNewTask(task);
+        storage.updateTasks(this);
     }
 
     /**
@@ -78,5 +78,15 @@ public class TaskList {
         task.setIsDone(false);
         storage.updateTasks(this);
         ui.displayUnmarkedTask(index + 1, task);
+    }
+
+    public ArrayList<Task> getTasksWithKeyword(String keyword) {
+        ArrayList<Task> results = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task.getDescription().contains(keyword)) {
+                results.add(task);
+            }
+        }
+        return results;
     }
 }

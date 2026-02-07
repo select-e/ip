@@ -1,5 +1,6 @@
 package aerith;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import aerith.exception.AerithException;
@@ -83,5 +84,14 @@ public class Ui {
     public void displayRemovedTask(Task task) {
         System.out.println("✧ I have removed this task: ✧");
         System.out.println(task + "\n");
+    }
+
+    public void listSearchResults(ArrayList<Task> relevantTasks) {
+        System.out.println("✧ ✧ ✧");
+        System.out.println("Here are the matching tasks in your list:");
+        for (int i = 0; i < relevantTasks.size(); i++) {
+            System.out.println((i + 1) + ". " + relevantTasks.get(i));
+        }
+        System.out.println("✧ ✧ ✧\n");
     }
 }

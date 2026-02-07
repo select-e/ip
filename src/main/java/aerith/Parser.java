@@ -3,11 +3,13 @@ package aerith;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 
 import aerith.exception.InvalidInputException;
 import aerith.exception.StorageException;
 import aerith.task.Deadline;
 import aerith.task.Event;
+import aerith.task.Task;
 import aerith.task.Todo;
 
 /**
@@ -73,6 +75,12 @@ public class Parser {
             }
             int taskNum = Integer.parseInt(arr[1]);
             taskList.removeTask(taskNum - 1);
+            break;
+        case "find":
+            if (arr.length < 2 || arr[1].isBlank()) {
+                throw new InvalidInputException("Please specify the keyword you want to search for.");
+            }
+            searchForKeyword(arr[1]);
             break;
         default:
             throw new InvalidInputException("My apologies, I do not understand what that means.");
@@ -231,5 +239,10 @@ public class Parser {
 
         String taskDesc = parts[0].trim();
         return new Event(taskDesc, from, to);
+    }
+
+    private void searchForKeyword(String keyword) {
+        ArrayList<Task> relevantTasks = taskList.getTasksWithKeyword(keyword);
+        ui.listSearchResults(relevantTasks);
     }
 }
