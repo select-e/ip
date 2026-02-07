@@ -25,7 +25,7 @@ public class TaskList {
      */
     public void addTask(Task task) {
         tasks.add(task);
-        storage.saveNewTask(task);
+        storage.updateTasks(this);
     }
 
     /**

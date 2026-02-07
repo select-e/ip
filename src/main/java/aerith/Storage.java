@@ -78,20 +78,4 @@ public class Storage {
             e.printStackTrace();
         }
     }
-
-    /**
-     * Writes a new task to the data file.
-     * @param task The new task
-     */
-    public void saveNewTask(Task task) {
-        try {
-            FileWriter fw = new FileWriter(filePath, true);
-            BufferedWriter bw = new BufferedWriter(fw);
-            bw.write(task.toSaveFormat());
-            bw.newLine();
-            bw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }
