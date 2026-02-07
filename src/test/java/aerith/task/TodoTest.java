@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 public class TodoTest {
     @Test
-    public void testFromSaveFormat(){
+    public void testFromSaveFormat() {
         assertEquals(new Todo("buy bread"), Todo.fromSaveFormat(" 0 | buy bread"));
 
         Todo markedTodo = new Todo("buy bread");

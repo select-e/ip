@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter;
  */
 public class Deadline extends Task {
     protected LocalDateTime deadline;
-    boolean hasTime;
+    private final boolean hasTime;
 
     public Deadline(String description, LocalDateTime deadline, boolean hasTime) {
         super(description);

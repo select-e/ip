@@ -18,7 +18,7 @@ import aerith.task.Todo;
  * Deals with loading tasks from the file and saving tasks in the file.
  */
 public class Storage {
-    String filePath;
+    private String filePath;
 
     /**
      * Loads the saved tasks.
@@ -39,10 +39,10 @@ public class Storage {
                 while (line != null) {
                     String[] taskInfo = line.split(" \\| ", 2);
                     Task task = switch (taskInfo[0]) {
-                        case "T" -> Todo.fromSaveFormat(taskInfo[1]);
-                        case "D" -> Deadline.fromSaveFormat(taskInfo[1]);
-                        case "E" -> Event.fromSaveFormat(taskInfo[1]);
-                        default -> null;
+                    case "T" -> Todo.fromSaveFormat(taskInfo[1]);
+                    case "D" -> Deadline.fromSaveFormat(taskInfo[1]);
+                    case "E" -> Event.fromSaveFormat(taskInfo[1]);
+                    default -> null;
                     };
                     taskList.addTask(task);
                     line = br.readLine();
@@ -77,8 +77,7 @@ public class Storage {
      * Updates the save file with the current list of tasks.
      * @param taskList The task list
      */
-    public void updateTasks(TaskList taskList) throws StorageException
-    {
+    public void updateTasks(TaskList taskList) throws StorageException {
         try {
             FileWriter fw = new FileWriter(filePath, false);
             try (BufferedWriter bw = new BufferedWriter(fw)) {
