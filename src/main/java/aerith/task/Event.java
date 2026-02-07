@@ -1,5 +1,8 @@
 package aerith.task;
 
+/**
+ * An event task, containing a "from" date/time and a "to" date/time.
+ */
 public class Event extends Task {
     private String from;
     private String to;
@@ -18,8 +21,8 @@ public class Event extends Task {
 
     /**
      * Returns an event from a save file string
-     * @param saveFormat the string
-     * @return the event
+     * @param saveFormat The string.
+     * @return The event.
      */
     public static Event fromSaveFormat(String saveFormat) {
         String[] taskInfo = saveFormat.split(" \\| ");

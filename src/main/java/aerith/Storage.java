@@ -15,9 +15,9 @@ public class Storage {
 
     /**
      * Loads the saved tasks.
-     * @param filePath The path to the save file
-     * @param ui The aerith.Ui instance
-     * @return A aerith.TaskList containing the loaded tasks
+     * @param filePath The path to the save file.
+     * @param ui The aerith.Ui instance.
+     * @return A TaskList containing the loaded tasks.
      */
     public TaskList getTaskList(String filePath, Ui ui) {
         this.filePath = filePath;
