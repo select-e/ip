@@ -2,7 +2,7 @@ package aerith;
 
 import java.util.Scanner;
 
-import aerith.exception.InvalidInputException;
+import aerith.exception.AerithException;
 import aerith.task.Deadline;
 import aerith.task.Event;
 import aerith.task.Task;
@@ -12,6 +12,10 @@ import aerith.task.Todo;
  * Deals with interactions with the user.
  */
 public class Ui {
+    public void showExceptionMessage(AerithException exception) {
+        System.out.println(exception.getMessage() + "\n");
+    }
+
     public void showLoadingError() {
         System.out.println("⚠ Something went wrong with the saved data. ⚠");
     }
@@ -36,8 +40,8 @@ public class Ui {
         while (!input.equals("bye")) {
             try {
                 parser.handleInput(input);
-            } catch (InvalidInputException e) {
-                System.out.println("⚠ " + e.getMessage() + " ⚠\n");
+            } catch (AerithException e) {
+                showExceptionMessage(e);
             }
             input = scanner.nextLine();
         }

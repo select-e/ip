@@ -2,7 +2,7 @@ package aerith;
 
 import java.util.ArrayList;
 
-import aerith.exception.InvalidInputException;
+import aerith.exception.StorageException;
 import aerith.task.Task;
 
 /**
@@ -23,7 +23,7 @@ public class TaskList {
      * Adds a new task to the list.
      * @param task The new task
      */
-    public void addTask(Task task) {
+    public void addTask(Task task) throws StorageException {
         tasks.add(task);
         storage.saveNewTask(task);
     }
@@ -49,7 +49,7 @@ public class TaskList {
      * Removes a task at a specified index.
      * @param index The index of the task
      */
-    public void removeTask(int index) {
+    public void removeTask(int index) throws StorageException {
         Task task = tasks.get(index);
         tasks.remove(index);
         storage.updateTasks(this);
@@ -59,9 +59,9 @@ public class TaskList {
     /**
      * Marks a task as done.
      * @param index The true task index
-     * @throws InvalidInputException
+     * @throws StorageException
      */
-    public void markTask(int index) throws InvalidInputException {
+    public void markTask(int index) throws StorageException {
         Task task = tasks.get(index);
         task.setIsDone(true);
         storage.updateTasks(this);
@@ -71,9 +71,9 @@ public class TaskList {
     /**
      * Marks a task as not done yet.
      * @param index The true task index
-     * @throws InvalidInputException
+     * @throws StorageException
      */
-    public void unmarkTask(int index) throws InvalidInputException {
+    public void unmarkTask(int index) throws StorageException {
         Task task = tasks.get(index);
         task.setIsDone(false);
         storage.updateTasks(this);

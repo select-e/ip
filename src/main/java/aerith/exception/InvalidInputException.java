@@ -1,7 +1,7 @@
 package aerith.exception;
 
-public class InvalidInputException extends Exception {
-    public InvalidInputException(String m) {
-        super(m);
+public class InvalidInputException extends AerithException {
+    public InvalidInputException(String message) {
+        super("⚠ " + message + " ⚠");
     }
 }
