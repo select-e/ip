@@ -1,12 +1,12 @@
 package aerith;
 
+import java.util.Scanner;
+
 import aerith.exception.InvalidInputException;
 import aerith.task.Deadline;
 import aerith.task.Event;
 import aerith.task.Task;
 import aerith.task.Todo;
-
-import java.util.Scanner;
 
 /**
  * Deals with interactions with the user.

@@ -1,17 +1,17 @@
 package aerith;
 
-import aerith.task.Deadline;
-import aerith.task.Event;
-import aerith.task.Task;
-import aerith.task.Todo;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.File;
+
+import aerith.task.Deadline;
+import aerith.task.Event;
+import aerith.task.Task;
+import aerith.task.Todo;
 
 /**
  * Deals with loading tasks from the file and saving tasks in the file.
@@ -23,7 +23,7 @@ public class Storage {
      * Loads the saved tasks.
      * @param filePath The path to the save file
      * @param ui The aerith.Ui instance
-     * @return A aerith.TaskList containing the loaded tasks
+     * @return A TaskList containing the loaded tasks
      */
     public TaskList getTaskList(String filePath, Ui ui) {
         this.filePath = filePath;

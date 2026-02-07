@@ -1,8 +1,9 @@
 package aerith;
 
-import aerith.exception.InvalidInputException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import aerith.exception.InvalidInputException;
 
 public class ParserTest {
     @Test

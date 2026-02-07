@@ -1,9 +1,9 @@
 package aerith;
 
+import java.util.ArrayList;
+
 import aerith.exception.InvalidInputException;
 import aerith.task.Task;
-
-import java.util.ArrayList;
 
 /**
  * Handles the list of tasks.
