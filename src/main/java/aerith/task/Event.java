@@ -24,7 +24,7 @@ public class Event extends Task {
     public static Event fromSaveFormat(String saveFormat) {
         String[] taskInfo = saveFormat.split(" \\| ");
         Event event = new Event(taskInfo[1], taskInfo[2], taskInfo[3]);
-        event.markDone(taskInfo[0].equals("1"));
+        event.setIsDone(taskInfo[0].equals("1"));
         return event;
     }
 

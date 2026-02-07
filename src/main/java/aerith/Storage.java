@@ -5,7 +5,13 @@ import aerith.task.Event;
 import aerith.task.Task;
 import aerith.task.Todo;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.File;
 
 /**
  * Deals with loading tasks from the file and saving tasks in the file.
@@ -48,9 +54,9 @@ public class Storage {
         } catch (FileNotFoundException e) {
             // Create a new save file
             try {
-                File saveFile = new File(filePath);
-                saveFile.getParentFile().mkdirs();
-                saveFile.createNewFile();
+                File file = new File(filePath);
+                file.getParentFile().mkdirs();
+                file.createNewFile();
                 return taskList;
             } catch (IOException ioException) {
                 ui.showSavingError();

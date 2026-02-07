@@ -19,7 +19,7 @@ public class Todo extends Task {
     public static Todo fromSaveFormat(String saveFormat) {
         String[] taskInfo = saveFormat.split(" \\| ");
         Todo todo = new Todo(taskInfo[1]);
-        todo.markDone(taskInfo[0].equals("1"));
+        todo.setIsDone(taskInfo[0].equals("1"));
         return todo;
     }
 

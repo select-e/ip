@@ -17,7 +17,7 @@ public abstract class Task {
         return description;
     }
 
-    public void markDone(boolean value) {
+    public void setIsDone(boolean value) {
         isDone = value;
     }
 

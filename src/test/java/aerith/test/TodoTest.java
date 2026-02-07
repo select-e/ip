@@ -11,7 +11,7 @@ public class TodoTest {
         assertEquals(Todo.fromSaveFormat(" 0 | buy bread"), new Todo("buy bread"));
 
         Todo markedTodo = new Todo("buy bread");
-        markedTodo.markDone(false);
+        markedTodo.setIsDone(false);
         assertEquals(Todo.fromSaveFormat(" 1 | buy bread"), markedTodo);
     }
 }

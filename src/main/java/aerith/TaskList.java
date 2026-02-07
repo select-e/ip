@@ -63,7 +63,7 @@ public class TaskList {
      */
     public void markTask(int index) throws InvalidInputException {
         Task task = tasks.get(index);
-        task.markDone(true);
+        task.setIsDone(true);
         storage.updateTasks(this);
         ui.displayMarkedTask(index + 1, task);
     }
@@ -75,7 +75,7 @@ public class TaskList {
      */
     public void unmarkTask(int index) throws InvalidInputException {
         Task task = tasks.get(index);
-        task.markDone(false);
+        task.setIsDone(false);
         storage.updateTasks(this);
         ui.displayUnmarkedTask(index + 1, task);
     }
