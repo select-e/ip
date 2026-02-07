@@ -1,11 +1,18 @@
 package aerith;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import aerith.exception.StorageException;
 import aerith.task.Deadline;
 import aerith.task.Event;
 import aerith.task.Task;
 import aerith.task.Todo;
-
-import java.io.*;
 
 /**
  * Deals with loading tasks from the file and saving tasks in the file.
@@ -19,7 +26,7 @@ public class Storage {
      * @param ui The aerith.Ui instance.
      * @return A TaskList containing the loaded tasks.
      */
-    public TaskList getTaskList(String filePath, Ui ui) {
+    public TaskList getTaskList(String filePath, Ui ui) throws StorageException {
         this.filePath = filePath;
         TaskList taskList = new TaskList(this, ui);
         // Open the save file
@@ -48,13 +55,19 @@ public class Storage {
         } catch (FileNotFoundException e) {
             // Create a new save file
             try {
-                File saveFile = new File(filePath);
-                saveFile.getParentFile().mkdirs();
-                saveFile.createNewFile();
+                File file = new File(filePath);
+                File parent = file.getParentFile();
+                if (parent != null && !parent.exists() && !parent.mkdirs()) {
+                    ui.showSavingError();
+                    return taskList;
+                }
+
+                boolean created = file.createNewFile();
+                assert created; // created is true because we already know the file does not already exist
                 return taskList;
+
             } catch (IOException ioException) {
                 ui.showSavingError();
-                ioException.printStackTrace();
             }
         }
         return null;
@@ -64,7 +77,7 @@ public class Storage {
      * Updates the save file with the current list of tasks.
      * @param taskList The task list
      */
-    public void updateTasks(TaskList taskList)
+    public void updateTasks(TaskList taskList) throws StorageException
     {
         try {
             FileWriter fw = new FileWriter(filePath, false);
@@ -75,7 +88,7 @@ public class Storage {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new StorageException("Something went wrong while saving data. " + e.getMessage());
         }
     }
 
@@ -83,7 +96,7 @@ public class Storage {
      * Writes a new task to the data file.
      * @param task The new task
      */
-    public void saveNewTask(Task task) {
+    public void saveNewTask(Task task) throws StorageException {
         try {
             FileWriter fw = new FileWriter(filePath, true);
             BufferedWriter bw = new BufferedWriter(fw);
@@ -91,7 +104,7 @@ public class Storage {
             bw.newLine();
             bw.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new StorageException("Something went wrong while saving data. " + e.getMessage());
         }
     }
 }

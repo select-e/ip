@@ -31,7 +31,7 @@ public class Deadline extends Task {
     public static Deadline fromSaveFormat(String saveFormat) {
         String[] taskInfo = saveFormat.split(" \\| ");
         Deadline deadline = new Deadline(taskInfo[1], LocalDateTime.parse(taskInfo[2]), taskInfo[3].equals("1"));
-        deadline.markDone(taskInfo[1].equals("1"));
+        deadline.setIsDone(taskInfo[1].equals("1"));
         return deadline;
     }
 

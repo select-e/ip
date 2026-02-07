@@ -1,8 +1,9 @@
 package aerith;
 
-import aerith.task.Task;
-
 import java.util.ArrayList;
+
+import aerith.exception.StorageException;
+import aerith.task.Task;
 
 /**
  * Handles the list of tasks.
@@ -22,7 +23,7 @@ public class TaskList {
      * Adds a new task to the list.
      * @param task The new task
      */
-    public void addTask(Task task) {
+    public void addTask(Task task) throws StorageException {
         tasks.add(task);
         storage.saveNewTask(task);
     }
@@ -48,7 +49,7 @@ public class TaskList {
      * Removes a task at a specified index.
      * @param index The index of the task
      */
-    public void removeTask(int index) {
+    public void removeTask(int index) throws StorageException {
         Task task = tasks.get(index);
         tasks.remove(index);
         storage.updateTasks(this);
@@ -58,10 +59,11 @@ public class TaskList {
     /**
      * Marks a task as done.
      * @param index The true task index
+     * @throws StorageException
      */
-    public void markTask(int index) {
+    public void markTask(int index) throws StorageException {
         Task task = tasks.get(index);
-        task.markDone(true);
+        task.setIsDone(true);
         storage.updateTasks(this);
         ui.displayMarkedTask(index + 1, task);
     }
@@ -69,10 +71,11 @@ public class TaskList {
     /**
      * Marks a task as not done yet.
      * @param index The true task index
+     * @throws StorageException
      */
-    public void unmarkTask(int index) {
+    public void unmarkTask(int index) throws StorageException {
         Task task = tasks.get(index);
-        task.markDone(false);
+        task.setIsDone(false);
         storage.updateTasks(this);
         ui.displayUnmarkedTask(index + 1, task);
     }

@@ -1,21 +1,22 @@
 package aerith;
 
-import aerith.exception.InvalidInputException;
-import aerith.task.Deadline;
-import aerith.task.Event;
-import aerith.task.Todo;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+
+import aerith.exception.InvalidInputException;
+import aerith.exception.StorageException;
+import aerith.task.Deadline;
+import aerith.task.Event;
+import aerith.task.Todo;
 
 /**
  * Deals with making sense of the user's commands.
  */
 public class Parser {
-    private TaskList taskList;
+    private final TaskList taskList;
     private final static String SAVE_FILE = "./data/save.txt";
-    private Ui ui;
+    private final Ui ui;
 
     public Parser(TaskList taskList, Ui ui) {
         this.taskList = taskList;
@@ -25,9 +26,9 @@ public class Parser {
     /**
      * Parse the user's input.
      * @param input The input string
-     * @throws InvalidInputException
+     * @throws InvalidInputException If information is missing from the command
      */
-    public void handleInput(String input) throws InvalidInputException {
+    public void handleInput(String input) throws InvalidInputException, StorageException {
         // Split the input into command & body
         String[] arr = input.split(" ", 2);
 
@@ -81,9 +82,8 @@ public class Parser {
     /**
      * Parses a command to mark a task as done.
      * @param commandBody The user-inputted body after the command "mark"
-     * @throws InvalidInputException
      */
-    private void parseMarkCommand(String commandBody) throws InvalidInputException {
+    private void parseMarkCommand(String commandBody) throws InvalidInputException, StorageException {
         int taskNum = getTaskNum(commandBody);
         taskList.markTask(taskNum - 1);
     }
@@ -91,9 +91,8 @@ public class Parser {
     /**
      * Parses a command to mark a task as not done yet.
      * @param commandBody The user-inputted body after the command "unmark"
-     * @throws InvalidInputException
      */
-    private void parseUnmarkCommand(String commandBody) throws InvalidInputException {
+    private void parseUnmarkCommand(String commandBody) throws InvalidInputException, StorageException {
         int taskNum = getTaskNum(commandBody);
         taskList.unmarkTask(taskNum - 1);
     }
@@ -102,7 +101,6 @@ public class Parser {
      * Returns a task number from a string input.
      * @param input The user-inputted string we want to validate
      * @return The task number
-     * @throws InvalidInputException
      */
     private int getTaskNum(String input) throws InvalidInputException {
         int taskNum;
@@ -124,7 +122,7 @@ public class Parser {
      * Adds a todo to the task list.
      * @param taskDesc The user-inputted description
      */
-    private void addTodo(String taskDesc) {
+    private void addTodo(String taskDesc) throws StorageException {
         Todo todo = new Todo(taskDesc.trim());
         taskList.addTask(todo);
         ui.displayNewTodo(todo);
@@ -133,9 +131,8 @@ public class Parser {
     /**
      * Adds a deadline task to the list.
      * @param command The user-inputted description and deadline
-     * @throws InvalidInputException
      */
-    private void addDeadline(String command) throws InvalidInputException {
+    private void addDeadline(String command) throws InvalidInputException, StorageException {
         String[] parts = command.split("/");
         String taskDesc = parts[0].trim();
 
@@ -195,9 +192,8 @@ public class Parser {
     /**
      * Adds an event to the task list.
      * @param command The user-inputted command body
-     * @throws InvalidInputException
      */
-    private void addEvent(String command) throws InvalidInputException {
+    private void addEvent(String command) throws InvalidInputException, StorageException {
         String[] parts = command.split("/");
         String taskDesc = parts[0].trim();
         if (taskDesc.isBlank()) {
@@ -212,7 +208,6 @@ public class Parser {
      * Parses the user's input and returns an event.
      * @param parts An array of string parts of the command body, after "event", previously separated by "/"
      * @return The new aerith.Event
-     * @throws InvalidInputException
      */
     private static Event getEvent(String[] parts) throws InvalidInputException {
         // Get "from" and "to"

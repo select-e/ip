@@ -30,7 +30,7 @@ public abstract class Task {
      * Sets the status of the task to done or not done.
      * @param value The new value to set to.
      */
-    public void markDone(boolean value) {
+    public void setIsDone(boolean value) {
         isDone = value;
     }
 
