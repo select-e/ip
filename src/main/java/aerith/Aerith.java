@@ -23,4 +23,9 @@ public class Aerith {
         ui.readInput(parser);
         ui.showClosingMessage();
     }
+
+    // Visible for testing
+    Parser getParser() {
+        return parser;
+    }
 }
