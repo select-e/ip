@@ -73,6 +73,8 @@ public class Parser {
                 throw new InvalidInputException("Please specify the keyword you want to search for.");
             }
             return searchForKeyword(arr[1]);
+        case "bye":
+            return "EXIT_APPLICATION";
         default:
             throw new InvalidInputException("My apologies, I do not understand what that means.");
         }
