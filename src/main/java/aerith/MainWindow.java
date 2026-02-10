@@ -24,8 +24,8 @@ public class MainWindow extends AnchorPane {
 
     private Aerith aerith;
 
-    private Image userImage = new Image(this.getClass().getResourceAsStream("/images/DaUser.png"));
-    private Image dukeImage = new Image(this.getClass().getResourceAsStream("/images/DaDuke.png"));
+    private Image userImage = new Image(this.getClass().getResourceAsStream("/images/UserImage.png"));
+    private Image aerithImage = new Image(this.getClass().getResourceAsStream("/images/AerithImage.png"));
 
     @FXML
     public void initialize() {
@@ -36,7 +36,7 @@ public class MainWindow extends AnchorPane {
     public void setAerith(Aerith d) {
         aerith = d;
 
-        dialogContainer.getChildren().add(DialogBox.getAerithDialog(aerith.getOpeningMessage(), dukeImage));
+        dialogContainer.getChildren().add(DialogBox.getAerithDialog(aerith.getOpeningMessage(), aerithImage));
     }
 
     /**
@@ -56,7 +56,7 @@ public class MainWindow extends AnchorPane {
 
         dialogContainer.getChildren().addAll(
                 DialogBox.getUserDialog(input, userImage),
-                DialogBox.getAerithDialog(response, dukeImage)
+                DialogBox.getAerithDialog(response, aerithImage)
         );
         userInput.clear();
     }
