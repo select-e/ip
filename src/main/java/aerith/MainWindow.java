@@ -35,6 +35,8 @@ public class MainWindow extends AnchorPane {
     /** Injects the Aerith instance */
     public void setAerith(Aerith d) {
         aerith = d;
+
+        dialogContainer.getChildren().add(DialogBox.getAerithDialog(aerith.getOpeningMessage(), dukeImage));
     }
 
     /**
@@ -54,7 +56,7 @@ public class MainWindow extends AnchorPane {
 
         dialogContainer.getChildren().addAll(
                 DialogBox.getUserDialog(input, userImage),
-                DialogBox.getDukeDialog(response, dukeImage)
+                DialogBox.getAerithDialog(response, dukeImage)
         );
         userInput.clear();
     }

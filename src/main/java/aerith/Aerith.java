@@ -36,13 +36,9 @@ public class Aerith {
         return ui.getResponse(parser, input);
     }
 
-    /**
-     * Run the program.
-     */
-    private void run() {
-        ui.showOpeningMessage();
-        ui.readInput(parser);
-        ui.showClosingMessage();
+    /** Returns the opening message. */
+    public String getOpeningMessage() {
+        return ui.getOpeningMessage();
     }
 
     /**
