@@ -29,58 +29,50 @@ public class Parser {
      * @param input The input string
      * @throws InvalidInputException If information is missing from the command
      */
-    public void handleInput(String input) throws InvalidInputException, StorageException {
+    public String parse(String input) throws InvalidInputException, StorageException {
         // Split the input into command & body
         String[] arr = input.split(" ", 2);
 
         switch(arr[0]) {
         case "list":
             // List the current tasks
-            ui.listTasks(taskList);
-            break;
+            return ui.getListOfTasks(taskList);
         case "mark":
             if (arr.length < 2) {
                 throw new InvalidInputException("Please provide the task number you want to mark as done.");
             }
-            parseMarkCommand(arr[1]);
-            break;
+            return parseMarkCommand(arr[1]);
         case "unmark":
             if (arr.length < 2) {
                 throw new InvalidInputException("Please provide the task number you want to mark as not done yet.");
             }
-            parseUnmarkCommand(arr[1]);
-            break;
+            return parseUnmarkCommand(arr[1]);
         case "todo":
             if (arr.length < 2 || arr[1].isBlank()) {
                 throw new InvalidInputException("The description of a todo cannot be empty.");
             }
-            addTodo(arr[1]);
-            break;
-        case "deadline":
+            return addTodo(arr[1]);
+                case "deadline":
             if (arr.length < 2 || arr[1].isBlank()) {
                 throw new InvalidInputException("The description of a deadline task cannot be empty.");
             }
-            addDeadline(arr[1]);
-            break;
+            return addDeadline(arr[1]);
         case "event":
             if (arr.length < 2 || arr[1].isBlank()) {
                 throw new InvalidInputException("The description of an event cannot be empty.");
             }
-            addEvent(arr[1]);
-            break;
+            return addEvent(arr[1]);
         case "delete":
             if (arr.length < 2 || arr[1].isBlank()) {
                 throw new InvalidInputException("Please specify the task you want to remove.");
             }
             int taskNum = Integer.parseInt(arr[1]);
-            taskList.removeTask(taskNum - 1);
-            break;
+            return taskList.removeTask(taskNum - 1);
         case "find":
             if (arr.length < 2 || arr[1].isBlank()) {
                 throw new InvalidInputException("Please specify the keyword you want to search for.");
             }
-            searchForKeyword(arr[1]);
-            break;
+            return searchForKeyword(arr[1]);
         default:
             throw new InvalidInputException("My apologies, I do not understand what that means.");
         }
@@ -90,18 +82,18 @@ public class Parser {
      * Parses a command to mark a task as done.
      * @param commandBody The user-inputted body after the command "mark"
      */
-    private void parseMarkCommand(String commandBody) throws InvalidInputException, StorageException {
+    private String parseMarkCommand(String commandBody) throws InvalidInputException, StorageException {
         int taskNum = getTaskNum(commandBody);
-        taskList.markTask(taskNum - 1);
+        return taskList.markTask(taskNum - 1);
     }
 
     /**
      * Parses a command to mark a task as not done yet.
      * @param commandBody The user-inputted body after the command "unmark"
      */
-    private void parseUnmarkCommand(String commandBody) throws InvalidInputException, StorageException {
+    private String parseUnmarkCommand(String commandBody) throws InvalidInputException, StorageException {
         int taskNum = getTaskNum(commandBody);
-        taskList.unmarkTask(taskNum - 1);
+        return taskList.unmarkTask(taskNum - 1);
     }
 
     /**
@@ -129,17 +121,17 @@ public class Parser {
      * Adds a todo to the task list.
      * @param taskDesc The user-inputted description
      */
-    private void addTodo(String taskDesc) throws StorageException {
+    private String addTodo(String taskDesc) throws StorageException {
         Todo todo = new Todo(taskDesc.trim());
         taskList.addTask(todo);
-        ui.displayNewTodo(todo);
+        return ui.getNewTodoConfirmation(todo);
     }
 
     /**
      * Adds a deadline task to the list.
      * @param command The user-inputted description and deadline
      */
-    private void addDeadline(String command) throws InvalidInputException, StorageException {
+    private String addDeadline(String command) throws InvalidInputException, StorageException {
         String[] parts = command.split("/");
         String taskDesc = parts[0].trim();
 
@@ -150,7 +142,7 @@ public class Parser {
 
         Deadline deadline = getDeadline(parts, taskDesc);
         taskList.addTask(deadline);
-        ui.displayNewDeadline(deadline);
+        return ui.getNewDeadlineConfirmation(deadline);
     }
 
     /**
@@ -201,7 +193,7 @@ public class Parser {
      * Adds an event to the task list.
      * @param command The user-inputted command body
      */
-    private void addEvent(String command) throws InvalidInputException, StorageException {
+    private String addEvent(String command) throws InvalidInputException, StorageException {
         String[] parts = command.split("/");
         String taskDesc = parts[0].trim();
         if (taskDesc.isBlank()) {
@@ -209,7 +201,7 @@ public class Parser {
         }
         Event event = getEvent(parts);
         taskList.addTask(event);
-        ui.displayNewEvent(event);
+        return ui.getNewEventConfirmation(event);
     }
 
     /**
@@ -243,8 +235,8 @@ public class Parser {
         return new Event(taskDesc, from, to);
     }
 
-    private void searchForKeyword(String keyword) {
+    private String searchForKeyword(String keyword) {
         ArrayList<Task> relevantTasks = taskList.getTasksWithKeyword(keyword);
-        ui.listSearchResults(relevantTasks);
+        return ui.getSearchResults(relevantTasks);
     }
 }

@@ -2,6 +2,7 @@ package aerith;
 
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.StringJoiner;
 
 import aerith.exception.AerithException;
 import aerith.task.Deadline;
@@ -40,7 +41,7 @@ public class Ui {
         String input = scanner.nextLine();
         while (!input.equals("bye")) {
             try {
-                parser.handleInput(input);
+                parser.parse(input);
             } catch (AerithException e) {
                 showExceptionMessage(e);
             }
@@ -48,50 +49,54 @@ public class Ui {
         }
     }
 
-    public void listTasks(TaskList taskList) {
-        System.out.println("✧ ✧ ✧");
+    public String getResponse(Parser parser, String input) {
+        try {
+            return parser.parse(input);
+        } catch (AerithException e) {
+            return e.getMessage();
+        }
+    }
+
+    public String getListOfTasks(TaskList taskList) {
+        StringBuilder sb = new StringBuilder("✧ ✧ ✧\n");
         for (int i = 0; i < taskList.getLength(); i++) {
-            System.out.println((i + 1) + ". " + taskList.getTask(i));
+            sb.append((i + 1)).append(". ").append(taskList.getTask(i)).append("\n");
         }
-        System.out.println("✧ ✧ ✧\n");
+        sb.append("✧ ✧ ✧");
+        return sb.toString();
     }
 
-    public void displayNewTodo(Todo todo) {
-        System.out.println("✧ I have added a new todo: ✧");
-        System.out.println(todo + "\n");
+    public String getNewTodoConfirmation(Todo todo) {
+        return "✧ I have added a new todo: ✧\n" + todo;
     }
 
-    public void displayNewDeadline(Deadline deadline) {
-        System.out.println("✧ I have added a new task: ✧");
-        System.out.println(deadline + "\n");
+    public String getNewDeadlineConfirmation(Deadline deadline) {
+        return "✧ I have added a new task: ✧\n" + deadline;
     }
 
-    public void displayNewEvent(Event event) {
-        System.out.println("✧ I have added a new event: ✧");
-        System.out.println(event + "\n");
+    public String getNewEventConfirmation(Event event) {
+        return "✧ I have added a new event: ✧\n" + event;
     }
 
-    public void displayMarkedTask(int taskNum, Task task) {
-        System.out.println("✧ I have marked this task as done: ✧");
-        System.out.println(taskNum + ". " + task + "\n");
+    public String getMarkedTaskConfirmation(int taskNum, Task task) {
+        return "✧ I have marked this task as done: ✧\n" + taskNum + ". " + task;
     }
 
-    public void displayUnmarkedTask(int taskNum, Task task) {
-        System.out.println("✧ I have marked this task as not done yet: ✧");
-        System.out.println(taskNum + ". " + task + "\n");
+    public String getUnmarkedTaskConfirmation(int taskNum, Task task) {
+        return "✧ I have marked this task as not done yet: ✧\n" + taskNum + ". " + task;
     }
 
-    public void displayRemovedTask(Task task) {
-        System.out.println("✧ I have removed this task: ✧");
-        System.out.println(task + "\n");
+    public String getRemovedTaskConfirmation(Task task) {
+        return "✧ I have removed this task: ✧\n" + task;
     }
 
-    public void listSearchResults(ArrayList<Task> relevantTasks) {
-        System.out.println("✧ ✧ ✧");
-        System.out.println("Here are the matching tasks in your list:");
+    public String getSearchResults(ArrayList<Task> relevantTasks) {
+        StringBuilder sb = new StringBuilder("✧ ✧ ✧\n");
+        sb.append("Here are the matching tasks in your list:\n");
         for (int i = 0; i < relevantTasks.size(); i++) {
-            System.out.println((i + 1) + ". " + relevantTasks.get(i));
+            sb.append(i + 1).append(". ").append(relevantTasks.get(i)).append("\n");
         }
-        System.out.println("✧ ✧ ✧\n");
+        sb.append("✧ ✧ ✧");
+        return sb.toString();
     }
 }

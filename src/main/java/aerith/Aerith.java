@@ -25,7 +25,15 @@ public class Aerith {
     }
 
     public static void main(String[] args) {
-        new Aerith().run();
+        //TODO: display the first message
+//        new Aerith().run();
+    }
+
+    /**
+     * Generates a response for the user's chat message.
+     */
+    public String getResponse(String input) {
+        return ui.getResponse(parser, input);
     }
 
     /**

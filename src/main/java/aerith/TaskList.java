@@ -49,11 +49,11 @@ public class TaskList {
      * Removes a task at a specified index.
      * @param index The index of the task
      */
-    public void removeTask(int index) throws StorageException {
+    public String removeTask(int index) throws StorageException {
         Task task = tasks.get(index);
         tasks.remove(index);
         storage.updateTasks(this);
-        ui.displayRemovedTask(task);
+        return ui.getRemovedTaskConfirmation(task);
     }
 
     /**
@@ -61,11 +61,11 @@ public class TaskList {
      * @param index The true task index
      * @throws StorageException
      */
-    public void markTask(int index) throws StorageException {
+    public String markTask(int index) throws StorageException {
         Task task = tasks.get(index);
         task.setIsDone(true);
         storage.updateTasks(this);
-        ui.displayMarkedTask(index + 1, task);
+        return ui.getMarkedTaskConfirmation(index + 1, task);
     }
 
     /**
@@ -73,11 +73,11 @@ public class TaskList {
      * @param index The true task index
      * @throws StorageException
      */
-    public void unmarkTask(int index) throws StorageException {
+    public String unmarkTask(int index) throws StorageException {
         Task task = tasks.get(index);
         task.setIsDone(false);
         storage.updateTasks(this);
-        ui.displayUnmarkedTask(index + 1, task);
+        return ui.getUnmarkedTaskConfirmation(index + 1, task);
     }
 
     public ArrayList<Task> getTasksWithKeyword(String keyword) {
