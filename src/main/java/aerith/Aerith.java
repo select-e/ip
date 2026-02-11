@@ -25,8 +25,6 @@ public class Aerith {
     }
 
     public static void main(String[] args) {
-        //TODO: display the first message
-//        new Aerith().run();
     }
 
     /**
