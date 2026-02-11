@@ -1,8 +1,6 @@
 package aerith;
 
 import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.StringJoiner;
 
 import aerith.exception.AerithException;
 import aerith.task.Deadline;
@@ -14,18 +12,9 @@ import aerith.task.Todo;
  * Deals with interactions with the user.
  */
 public class Ui {
-    public void showExceptionMessage(AerithException exception) {
-        System.out.println(exception.getMessage() + "\n");
-    }
-
-    public void showLoadingError() {
-        System.out.println("⚠ Something went wrong with the saved data. ⚠");
-    }
-
-    public void showSavingError() {
-        System.out.println("⚠ Something went wrong while trying to create the save file. ⚠");
-    }
-
+    /**
+     * Returns the opening message.
+     */
     public String getOpeningMessage() {
         return """
                 . ⚬ ✧ ○
@@ -33,6 +22,11 @@ public class Ui {
                 """;
     }
 
+    /**
+     * Returns the response for a given input.
+     * @param parser The parser instance
+     * @param input The user's input
+     */
     public String getResponse(Parser parser, String input) {
         try {
             return parser.parse(input);
@@ -41,6 +35,10 @@ public class Ui {
         }
     }
 
+    /**
+     * Returns the list of tasks as a string.
+     * @param taskList The task list
+     */
     public String getListOfTasks(TaskList taskList) {
         StringBuilder sb = new StringBuilder("✧ ✧ ✧\n");
         for (int i = 0; i < taskList.getLength(); i++) {
@@ -50,30 +48,60 @@ public class Ui {
         return sb.toString();
     }
 
+    /**
+     * Returns a confirmation message for a new todo.
+     * @param todo The new todo
+     */
     public String getNewTodoConfirmation(Todo todo) {
         return "✧ I have added a new todo: ✧\n" + todo;
     }
 
+    /**
+     * Returns a confirmation message for a new deadline task.
+     * @param deadline The new deadline task
+     */
     public String getNewDeadlineConfirmation(Deadline deadline) {
         return "✧ I have added a new task: ✧\n" + deadline;
     }
 
+    /**
+     * Returns a confirmation message for a new event.
+     * @param event The new event
+     */
     public String getNewEventConfirmation(Event event) {
         return "✧ I have added a new event: ✧\n" + event;
     }
 
+    /**
+     * Returns a confirmation message for marking a task.
+     * @param taskNum The user-facing number for the task
+     * @param task The marked task
+     */
     public String getMarkedTaskConfirmation(int taskNum, Task task) {
         return "✧ I have marked this task as done: ✧\n" + taskNum + ". " + task;
     }
 
+    /**
+     * Returns a confirmation message for unmarking a task.
+     * @param taskNum The user-facing number for the task
+     * @param task The unmarked task
+     */
     public String getUnmarkedTaskConfirmation(int taskNum, Task task) {
         return "✧ I have marked this task as not done yet: ✧\n" + taskNum + ". " + task;
     }
 
+    /**
+     * Returns a confirmation message for removing a task.
+     * @param task The removed task
+     */
     public String getRemovedTaskConfirmation(Task task) {
         return "✧ I have removed this task: ✧\n" + task;
     }
 
+    /**
+     * Returns the formatted results for a search.
+     * @param relevantTasks The search results
+     */
     public String getSearchResults(ArrayList<Task> relevantTasks) {
         StringBuilder sb = new StringBuilder("✧ ✧ ✧\n");
         sb.append("Here are the matching tasks in your list:\n");

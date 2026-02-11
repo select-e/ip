@@ -18,59 +18,74 @@ import aerith.task.Todo;
  * Deals with loading tasks from the file and saving tasks in the file.
  */
 public class Storage {
-    private String filePath;
+    private final String filePath;
+
+    public Storage(String filePath) {
+        this.filePath = filePath;
+    }
 
     /**
      * Loads the saved tasks.
-     * @param filePath The path to the save file.
      * @param ui The aerith.Ui instance.
      * @return A TaskList containing the loaded tasks.
      */
-    public TaskList getTaskList(String filePath, Ui ui) throws StorageException {
-        this.filePath = filePath;
+    public TaskList getTaskList(Ui ui) throws StorageException {
         TaskList taskList = new TaskList(this, ui);
-        // Open the save file
+
         try {
             BufferedReader br = new BufferedReader(new FileReader(filePath));
             try {
-
-                String line = br.readLine();
-
-                while (line != null) {
-                    String[] taskInfo = line.split(" \\| ", 2);
-                    Task task = switch (taskInfo[0]) {
-                    case "T" -> Todo.fromSaveFormat(taskInfo[1]);
-                    case "D" -> Deadline.fromSaveFormat(taskInfo[1]);
-                    case "E" -> Event.fromSaveFormat(taskInfo[1]);
-                    default -> null;
-                    };
-                    taskList.addTask(task);
-                    line = br.readLine();
-                }
-                br.close();
-                return taskList;
+                getTasksFromFile(taskList, br);
             } catch (IOException e) {
-                ui.showLoadingError();
+                throw new StorageException(e.getMessage());
             }
         } catch (FileNotFoundException e) {
-            // Create a new save file
-            try {
-                File file = new File(filePath);
-                File parent = file.getParentFile();
-                if (parent != null && !parent.exists() && !parent.mkdirs()) {
-                    ui.showSavingError();
-                    return taskList;
-                }
-
-                boolean created = file.createNewFile();
-                assert created : "File should not already exist";
-                return taskList;
-
-            } catch (IOException ioException) {
-                ui.showSavingError();
-            }
+            createNewFile();
         }
-        return null;
+        return taskList;
+    }
+
+    /**
+     * Reads data from a buffered reader and inserts tasks into a task list.
+     * @param taskList The task list to be populated
+     * @param br The buffered reader of the data file
+     * @throws IOException If I/O errors occur
+     * @throws StorageException If an error occurs when adding tasks
+     */
+    private void getTasksFromFile(TaskList taskList, BufferedReader br) throws IOException, StorageException {
+        String line = br.readLine();
+
+        while (line != null) {
+            String[] taskInfo = line.split(" \\| ", 2);
+            Task task = switch (taskInfo[0]) {
+                case "T" -> Todo.fromSaveFormat(taskInfo[1]);
+                case "D" -> Deadline.fromSaveFormat(taskInfo[1]);
+                case "E" -> Event.fromSaveFormat(taskInfo[1]);
+                default -> null;
+            };
+            taskList.addTask(task);
+            line = br.readLine();
+        }
+        br.close();
+    }
+
+    /**
+     * Create a new data file.
+     * @throws StorageException If an I/O exception occurs
+     */
+    private void createNewFile() throws StorageException {
+        File file = new File(filePath);
+        File parent = file.getParentFile();
+        if (parent != null && !parent.exists() && !parent.mkdirs()) {
+            throw new StorageException("Something went wrong while trying to create the parent folder of the data file.");
+        }
+
+        try {
+            boolean created = file.createNewFile();
+            assert created; // created is true because we already know the file does not already exist
+        } catch (IOException e) {
+            throw new StorageException("Something went wrong while trying to create the data file.");
+        }
     }
 
     /**
@@ -86,22 +101,6 @@ public class Storage {
                     bw.newLine();
                 }
             }
-        } catch (IOException e) {
-            throw new StorageException("Something went wrong while saving data. " + e.getMessage());
-        }
-    }
-
-    /**
-     * Writes a new task to the data file.
-     * @param task The new task
-     */
-    public void saveNewTask(Task task) throws StorageException {
-        try {
-            FileWriter fw = new FileWriter(filePath, true);
-            BufferedWriter bw = new BufferedWriter(fw);
-            bw.write(task.toSaveFormat());
-            bw.newLine();
-            bw.close();
         } catch (IOException e) {
             throw new StorageException("Something went wrong while saving data. " + e.getMessage());
         }

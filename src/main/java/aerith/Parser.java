@@ -74,7 +74,7 @@ public class Parser {
             }
             return searchForKeyword(arr[1]);
         case "bye":
-            return "EXIT_APPLICATION";
+            return MainWindow.EXIT_COMMAND;
         default:
             throw new InvalidInputException("My apologies, I do not understand what that means.");
         }
@@ -144,7 +144,7 @@ public class Parser {
             throw new InvalidInputException("The description of an event cannot be empty.");
         }
 
-        Deadline deadline = getDeadline(parts, taskDesc);
+        Deadline deadline = getDeadlineFromCommand(parts);
         taskList.addTask(deadline);
         return ui.getNewDeadlineConfirmation(deadline);
     }
@@ -152,13 +152,10 @@ public class Parser {
     /**
      * Parses the user input and returns a deadline task.
      * @param parts An array of string parts of the command body, after "deadline", previously separated by "/".
-     * @param taskDesc The task description.
      * @return A new deadline task.
      * @throws InvalidInputException If deadline is missing or format is invalid.
      */
-    private static Deadline getDeadline(String[] parts, String taskDesc) throws InvalidInputException {
-        assert !taskDesc.isBlank() : "Task description should not be blank";
-
+    private static Deadline getDeadlineFromCommand(String[] parts) throws InvalidInputException {
         if (parts.length < 2) {
             throw new InvalidInputException("The task requires a deadline. Please specify it using the /by command.");
         }
@@ -189,6 +186,7 @@ public class Parser {
                 throw new InvalidInputException("Please enter a date in the format "
                         + "\"dd-MM-yyyy\" or \"dd-MM-yyyy HH:ss\".");
             }
+            String taskDesc = parts[0].trim();
             return new Deadline(taskDesc, date, hasTime);
         } else {
             throw new InvalidInputException("Please enter a deadline using the /by command.");
@@ -205,7 +203,7 @@ public class Parser {
         if (taskDesc.isBlank()) {
             throw new InvalidInputException("The description of an event cannot be empty.");
         }
-        Event event = getEvent(parts);
+        Event event = getEventFromCommand(parts);
         taskList.addTask(event);
         return ui.getNewEventConfirmation(event);
     }
@@ -215,32 +213,36 @@ public class Parser {
      * @param parts An array of string parts of the command body, after "event", previously separated by "/"
      * @return The new aerith.Event
      */
-    private static Event getEvent(String[] parts) throws InvalidInputException {
+    private static Event getEventFromCommand(String[] parts) throws InvalidInputException {
         // Get "from" and "to"
-        String from = "";
-        String to = "";
+        String fromString = "";
+        String toString = "";
         for (int i = 1; i < parts.length; i++) {
             String[] cmd = parts[i].split(" ", 2);
             if (cmd[0].equals("from")) {
-                from = cmd[1].trim();
+                fromString = cmd[1].trim();
             } else if (cmd[0].equals("to")) {
-                to = cmd[1].trim();
+                toString = cmd[1].trim();
             }
         }
 
-        if (from.isBlank()) {
+        if (fromString.isBlank()) {
             throw new InvalidInputException("The event requires a starting date/time. "
                     + "Please specify it using the /from command.");
         }
-        if (to.isBlank()) {
+        if (toString.isBlank()) {
             throw new InvalidInputException("The event requires an ending date/time. "
                     + "Please specify it using the /to command.");
         }
 
         String taskDesc = parts[0].trim();
-        return new Event(taskDesc, from, to);
+        return new Event(taskDesc, fromString, toString);
     }
 
+    /**
+     * Search for a keyword in task list.
+     * @param keyword The keyword provided
+     */
     private String searchForKeyword(String keyword) {
         assert !keyword.isBlank() : "Keyword should not be blank";
 
