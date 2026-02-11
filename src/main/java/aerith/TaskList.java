@@ -50,6 +50,8 @@ public class TaskList {
      * @param index The index of the task
      */
     public String removeTask(int index) throws StorageException {
+        assert index >= 0 && index < tasks.size() : "Index should be within bounds";
+
         Task task = tasks.get(index);
         tasks.remove(index);
         storage.updateTasks(this);

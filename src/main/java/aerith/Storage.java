@@ -63,7 +63,7 @@ public class Storage {
                 }
 
                 boolean created = file.createNewFile();
-                assert created; // created is true because we already know the file does not already exist
+                assert created : "File should not already exist";
                 return taskList;
 
             } catch (IOException ioException) {
