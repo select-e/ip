@@ -124,6 +124,8 @@ public class Parser {
      * @param taskDesc The user-inputted description
      */
     private String addTodo(String taskDesc) throws StorageException {
+        assert !taskDesc.isBlank() : "Task description should not be blank";
+        
         Todo todo = new Todo(taskDesc.trim());
         taskList.addTask(todo);
         return ui.getNewTodoConfirmation(todo);
@@ -242,6 +244,8 @@ public class Parser {
      * @param keyword The keyword provided
      */
     private String searchForKeyword(String keyword) {
+        assert !keyword.isBlank() : "Keyword should not be blank";
+
         ArrayList<Task> relevantTasks = taskList.getTasksWithKeyword(keyword);
         return ui.getSearchResults(relevantTasks);
     }
