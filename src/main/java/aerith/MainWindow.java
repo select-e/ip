@@ -13,6 +13,8 @@ import javafx.stage.Stage;
  * Controller for the main GUI.
  */
 public class MainWindow extends AnchorPane {
+    public final static String EXIT_COMMAND = "EXIT_APPLICATION";
+
     @FXML
     private ScrollPane scrollPane;
     @FXML
@@ -49,7 +51,7 @@ public class MainWindow extends AnchorPane {
         String response = aerith.getResponse(input);
 
         // If command is "bye", close the app
-        if (response.equals("EXIT_APPLICATION")) {
+        if (response.equals(EXIT_COMMAND)) {
             Stage stage = (Stage) dialogContainer.getScene().getWindow();
             stage.close();
         }

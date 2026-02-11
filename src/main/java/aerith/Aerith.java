@@ -9,24 +9,18 @@ import aerith.exception.StorageException;
 public class Aerith {
     private static final String SAVE_FILE = "./data/save.txt";
     private TaskList taskList;
-    private Storage storage;
-    private Ui ui;
-    private Parser parser;
+    private final Ui ui;
+    private final Parser parser;
 
     public Aerith() {
         ui = new Ui();
-        storage = new Storage();
+        Storage storage = new Storage(SAVE_FILE);
         try {
-            taskList = storage.getTaskList(SAVE_FILE, ui);
+            taskList = storage.getTaskList(ui);
         } catch (StorageException e) {
-            ui.showExceptionMessage(e);
+            System.out.println(e.getMessage() + "\n");
         }
         parser = new Parser(taskList, ui);
-    }
-
-    public static void main(String[] args) {
-        //TODO: display the first message
-//        new Aerith().run();
     }
 
     /**

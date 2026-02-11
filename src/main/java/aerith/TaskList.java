@@ -59,7 +59,7 @@ public class TaskList {
     /**
      * Marks a task as done.
      * @param index The true task index
-     * @throws StorageException
+     * @throws StorageException If an error occurs while updating the task data
      */
     public String markTask(int index) throws StorageException {
         Task task = tasks.get(index);
@@ -71,7 +71,7 @@ public class TaskList {
     /**
      * Marks a task as not done yet.
      * @param index The true task index
-     * @throws StorageException
+     * @throws StorageException If an error occurs while updating the task data
      */
     public String unmarkTask(int index) throws StorageException {
         Task task = tasks.get(index);
@@ -80,6 +80,10 @@ public class TaskList {
         return ui.getUnmarkedTaskConfirmation(index + 1, task);
     }
 
+    /**
+     * Returns all tasks that contain the keyword.
+     * @param keyword The keyword provided
+     */
     public ArrayList<Task> getTasksWithKeyword(String keyword) {
         ArrayList<Task> results = new ArrayList<>();
         for (Task task : tasks) {
