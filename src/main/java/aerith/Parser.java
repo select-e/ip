@@ -31,48 +31,59 @@ public class Parser {
      */
     public String parse(String input) throws InvalidInputException, StorageException {
         // Split the input into command & body
-        String[] arr = input.split(" ", 2);
+        String[] commandParts = input.split(" ", 2);
+        boolean isSingleWordCommand = commandParts.length < 2;
+        String commandHead = commandParts[0];
+        String commandBody = "";
+        if (!isSingleWordCommand) {
+            commandBody = commandParts[1];
+        }
 
-        switch(arr[0]) {
+        switch(commandHead) {
         case "list":
             // List the current tasks
             return ui.getListOfTasks(taskList);
         case "mark":
-            if (arr.length < 2) {
+            if (isSingleWordCommand) {
                 throw new InvalidInputException("Please provide the task number you want to mark as done.");
             }
-            return parseMarkCommand(arr[1]);
+            return parseMarkCommand(commandBody);
         case "unmark":
-            if (arr.length < 2) {
+            if (isSingleWordCommand) {
                 throw new InvalidInputException("Please provide the task number you want to mark as not done yet.");
             }
-            return parseUnmarkCommand(arr[1]);
+            return parseUnmarkCommand(commandBody);
         case "todo":
-            if (arr.length < 2 || arr[1].isBlank()) {
+            if (isSingleWordCommand || commandBody.isBlank()) {
                 throw new InvalidInputException("The description of a todo cannot be empty.");
             }
-            return addTodo(arr[1]);
+            return addTodo(commandBody);
                 case "deadline":
-            if (arr.length < 2 || arr[1].isBlank()) {
+            if (isSingleWordCommand || commandBody.isBlank()) {
                 throw new InvalidInputException("The description of a deadline task cannot be empty.");
             }
-            return addDeadline(arr[1]);
+            return addDeadline(commandBody);
         case "event":
-            if (arr.length < 2 || arr[1].isBlank()) {
+            if (isSingleWordCommand || commandBody.isBlank()) {
                 throw new InvalidInputException("The description of an event cannot be empty.");
             }
-            return addEvent(arr[1]);
+            return addEvent(commandBody);
         case "delete":
-            if (arr.length < 2 || arr[1].isBlank()) {
+            if (isSingleWordCommand || commandBody.isBlank()) {
                 throw new InvalidInputException("Please specify the task you want to remove.");
             }
-            int taskNum = Integer.parseInt(arr[1]);
+            int taskNum = Integer.parseInt(commandBody);
             return taskList.removeTask(taskNum - 1);
         case "find":
-            if (arr.length < 2 || arr[1].isBlank()) {
+            if (isSingleWordCommand || commandBody.isBlank()) {
                 throw new InvalidInputException("Please specify the keyword you want to search for.");
             }
-            return searchForKeyword(arr[1]);
+            return searchForKeyword(commandBody);
+        case "edit":
+            if (isSingleWordCommand || commandBody.isBlank()) {
+                throw new InvalidInputException("Please provide the task number of the task you want to edit.");
+            }
+            return editTask(commandBody);
         case "bye":
             return MainWindow.EXIT_COMMAND;
         default:
@@ -133,10 +144,10 @@ public class Parser {
 
     /**
      * Adds a deadline task to the list.
-     * @param command The user-inputted description and deadline
+     * @param commandBody The user-inputted description and deadline
      */
-    private String addDeadline(String command) throws InvalidInputException, StorageException {
-        String[] parts = command.split("/");
+    private String addDeadline(String commandBody) throws InvalidInputException, StorageException {
+        String[] parts = commandBody.split("/");
         String taskDesc = parts[0].trim();
 
         // Handle the case where there is no description before the "/"
@@ -168,37 +179,48 @@ public class Parser {
 
         // Get date
         if (cmd[0].equals("by")) {
-            DateTimeFormatter formatter;
-            LocalDateTime date;
-            boolean hasTime = false;
-            String dateString = cmd[1];
-            if (dateString.contains(" ")) {
-                hasTime = true;
-            } else {
-                // Set the time to an arbitrary if time is not provided
-                dateString = cmd[1].trim() + " 12:00";
-            }
-            try {
-                // Parse the string into a LocalDateTime
-                formatter = DateTimeFormatter.ofPattern("d-M-yyyy HH:mm");
-                date = LocalDateTime.parse(dateString, formatter);
-            } catch (DateTimeParseException e) {
-                throw new InvalidInputException("Please enter a date in the format "
-                        + "\"dd-MM-yyyy\" or \"dd-MM-yyyy HH:ss\".");
-            }
+            String dateString = cmd[1].trim();
+            boolean hasTime = dateString.contains(" ");
+            LocalDateTime deadline = getDateTimeFromString(dateString, hasTime);
             String taskDesc = parts[0].trim();
-            return new Deadline(taskDesc, date, hasTime);
+            return new Deadline(taskDesc, deadline, hasTime);
         } else {
             throw new InvalidInputException("Please enter a deadline using the /by command.");
         }
     }
 
     /**
-     * Adds an event to the task list.
-     * @param command The user-inputted command body
+     * Parses a string into a LocalDateTime
+     * @param text The string.
+     * @param hasTime Whether text contains time information.
+     * @return The LocalDateTime.
+     * @throws InvalidInputException If the string does not fit the pattern "d-M-yyyy HH:mm".
      */
-    private String addEvent(String command) throws InvalidInputException, StorageException {
-        String[] parts = command.split("/");
+    private static LocalDateTime getDateTimeFromString(String text, boolean hasTime) throws InvalidInputException {
+        DateTimeFormatter formatter;
+        LocalDateTime date;
+        String dateString = text;
+        if (!hasTime) {
+            // Set the time to an arbitrary if time is not provided
+            dateString = text + " 12:00";
+        }
+        try {
+            // Parse the string into a LocalDateTime
+            formatter = DateTimeFormatter.ofPattern("d-M-yyyy HH:mm");
+            date = LocalDateTime.parse(dateString, formatter);
+        } catch (DateTimeParseException e) {
+            throw new InvalidInputException("Please enter a date in the format "
+                    + "\"dd-MM-yyyy\" or \"dd-MM-yyyy HH:ss\".");
+        }
+        return date;
+    }
+
+    /**
+     * Adds an event to the task list.
+     * @param commandBody The user-inputted command body
+     */
+    private String addEvent(String commandBody) throws InvalidInputException, StorageException {
+        String[] parts = commandBody.split("/");
         String taskDesc = parts[0].trim();
         if (taskDesc.isBlank()) {
             throw new InvalidInputException("The description of an event cannot be empty.");
@@ -211,7 +233,7 @@ public class Parser {
     /**
      * Parses the user's input and returns an event.
      * @param parts An array of string parts of the command body, after "event", previously separated by "/"
-     * @return The new aerith.Event
+     * @return The new Event
      */
     private static Event getEventFromCommand(String[] parts) throws InvalidInputException {
         // Get "from" and "to"
@@ -248,5 +270,71 @@ public class Parser {
 
         ArrayList<Task> relevantTasks = taskList.getTasksWithKeyword(keyword);
         return ui.getSearchResults(relevantTasks);
+    }
+
+    /**
+     * Parses an edit command and updates the task accordingly.
+     * @param commandBody The user-inputted command body.
+     * @return An edited task confirmation message.
+     * @throws InvalidInputException If the task number is invalid or the flags do not match the task type.
+     * @throws StorageException If there is an error while updating the stored tasks.
+     */
+    private String editTask(String commandBody) throws InvalidInputException, StorageException {
+        String[] parts = commandBody.split("/");
+
+        if (parts.length < 2) {
+            throw new InvalidInputException("Please specify the details you would like to edit.");
+        }
+
+        int taskNum;
+        try {
+            taskNum = Integer.parseInt(parts[0].trim());
+        } catch (NumberFormatException e) {
+            throw new InvalidInputException("Please specify the task you want to update by its task number.");
+        }
+
+        assert taskNum != 0 : "A valid task number should be more than zero.";
+        Task task = taskList.getTask(taskNum - 1);
+
+        for (int i = 1; i < parts.length; i++) {
+            String[] cmdParts = parts[i].split(" ", 2);
+
+            if (cmdParts.length < 2) {
+                throw new InvalidInputException("Please provide the details you want to update.");
+            }
+
+            String flag = cmdParts[0];
+            String argument = cmdParts[1].trim();
+
+            switch (flag) {
+            case "desc":
+                task.setDescription(argument);
+                break;
+            case "by":
+                if (!(task instanceof Deadline deadlineTask)) {
+                    throw new InvalidInputException("I cannot change the /by field of this task, as it is not a deadline task.");
+                }
+                LocalDateTime deadline = getDateTimeFromString(argument, argument.contains(" "));
+                deadlineTask.setDeadline(deadline);
+                break;
+            case "from":
+                if (!(task instanceof Event event)) {
+                    throw new InvalidInputException("I cannot change the /from field of this task, as it is not an event.");
+                }
+                event.setStartDateTime(argument);
+                break;
+            case "to":
+                if (!(task instanceof Event event)) {
+                    throw new InvalidInputException("I cannot change the /to field of this task, as it is not an event.");
+                }
+                event.setEndDateTime(argument);
+                break;
+            default:
+                throw new InvalidInputException("My apologies, I do not understand the command \"/" + cmdParts[0] + "\".");
+            }
+        }
+
+        taskList.updateTasks();
+        return ui.getEditedTaskConfirmation(task);
     }
 }

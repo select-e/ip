@@ -27,6 +27,14 @@ public abstract class Task {
     }
 
     /**
+     * Sets the description of the task.
+     * @param description The new description
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
      * Sets the status of the task to done or not done.
      * @param value The new value to set to.
      */

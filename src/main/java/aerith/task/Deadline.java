@@ -35,6 +35,14 @@ public class Deadline extends Task {
         return deadline;
     }
 
+    /**
+     * Sets the deadline of this task.
+     * @param deadline The new deadline.
+     */
+    public void setDeadline(LocalDateTime deadline) {
+        this.deadline = deadline;
+    }
+
     @Override
     public String toString() {
         DateTimeFormatter formatter;

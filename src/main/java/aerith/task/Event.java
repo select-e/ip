@@ -13,6 +13,22 @@ public class Event extends Task {
         this.to = to;
     }
 
+    /**
+     * Updates the "from" field of this event.
+     * @param start The new start datetime.
+     */
+    public void setStartDateTime(String start) {
+        from = start;
+    }
+
+    /**
+     * Updates the "to" field of this event.
+     * @param end The new end datetime.
+     */
+    public void setEndDateTime(String end) {
+        to = end;
+    }
+
     @Override
     public String toSaveFormat() {
         // E | isDone | description | from | to
