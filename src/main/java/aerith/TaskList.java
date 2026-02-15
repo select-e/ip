@@ -95,4 +95,8 @@ public class TaskList {
         }
         return results;
     }
+
+    public void updateTasks() throws StorageException {
+        storage.updateTasks(this);
+    }
 }

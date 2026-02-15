@@ -111,4 +111,12 @@ public class Ui {
         sb.append("✧ ✧ ✧");
         return sb.toString();
     }
+
+    /**
+     * Returns a confirmation message for editing a task
+     * @param task The edited task
+     */
+    public String getEditedTaskConfirmation(Task task) {
+        return "✧ I have updated this task: ✧\n" + task;
+    }
 }
