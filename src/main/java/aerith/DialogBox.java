@@ -48,10 +48,12 @@ public class DialogBox extends HBox {
         setAlignment(Pos.TOP_LEFT);
     }
 
+    /* Factory method for creating dialog boxes for the user. */
     public static DialogBox getUserDialog(String text, Image img) {
         return new DialogBox(text, img);
     }
 
+    /* Factory method for creating dialog boxes for Aerith. */
     public static DialogBox getAerithDialog(String text, Image img) {
         var db = new DialogBox(text, img);
         db.flip();

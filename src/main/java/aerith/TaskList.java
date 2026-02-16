@@ -96,6 +96,10 @@ public class TaskList {
         return results;
     }
 
+    /**
+     * Updates the save file with the current list of tasks.
+     * @throws StorageException If an error occurs while updating the task data
+     */
     public void updateTasks() throws StorageException {
         storage.updateTasks(this);
     }
