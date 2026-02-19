@@ -1,0 +1,51 @@
+.root {
+    main-color: rgb(237, 255, 242);
+    -fx-background-color: main-color;
+    -fx-background-image: url("../images/courtyard.jpg");
+    -fx-background-position: 87% 50%;
+    -fx-background-size: auto 100%;
+}
+
+.text-field {
+    -fx-background-color: #ffffff;
+}
+
+.button {
+    -fx-background-color: #d8eaa0;
+    -fx-font: 18px sans-serif;
+}
+
+.button:hover {
+    -fx-background-color: #70a867;
+    -fx-font-size: 18px;
+}
+
+.button:pressed {
+    -fx-background-color: #73b867;
+    -fx-font-size: 20px;
+}
+
+.scroll-pane {
+    -fx-background-color: rgba(255,255,255,.5);
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar {
+    -fx-font-size: 10px;  /* Change width of scroll bar. */
+    -fx-background-color: main-color;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #7bd3e4;
+    -fx-background-radius: 1em;
+}
+
+/* Hides the increment and decrement buttons. */
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-pref-height: 0;
+    -fx-opacity: 0;
+}
