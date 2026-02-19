@@ -1,5 +1,6 @@
 package aerith;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -31,7 +32,6 @@ public class MainWindow extends AnchorPane {
 
     @FXML
     public void initialize() {
-        scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
     }
 
     /** Injects the Aerith instance */
@@ -61,5 +61,6 @@ public class MainWindow extends AnchorPane {
                 DialogBox.getAerithDialog(response, aerithImage)
         );
         userInput.clear();
+        Platform.runLater(() -> scrollPane.setVvalue(1.0));
     }
 }
