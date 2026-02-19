@@ -70,7 +70,7 @@ public class Storage {
     }
 
     /**
-     * Create a new data file.
+     * Creates a new data file.
      * @throws StorageException If an I/O exception occurs
      */
     private void createNewFile() throws StorageException {

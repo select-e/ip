@@ -25,7 +25,7 @@ public class Parser {
     }
 
     /**
-     * Parse the user's input.
+     * Parses the user's input.
      * @param input The input string
      * @throws InvalidInputException If information is missing from the command
      */
@@ -262,7 +262,7 @@ public class Parser {
     }
 
     /**
-     * Search for a keyword in task list.
+     * Searches for a keyword in task list.
      * @param keyword The keyword provided
      */
     private String searchForKeyword(String keyword) {
