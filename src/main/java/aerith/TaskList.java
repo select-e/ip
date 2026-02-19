@@ -2,6 +2,7 @@ package aerith;
 
 import java.util.ArrayList;
 
+import aerith.exception.InvalidInputException;
 import aerith.exception.StorageException;
 import aerith.task.Task;
 
@@ -49,8 +50,10 @@ public class TaskList {
      * Removes a task at a specified index.
      * @param index The index of the task
      */
-    public String removeTask(int index) throws StorageException {
-        assert index >= 0 && index < tasks.size() : "Index should be within bounds";
+    public String removeTask(int index) throws StorageException, InvalidInputException {
+        if (index < 0 || index >= tasks.size()) {
+            throw new InvalidInputException((index + 1) + " is not a valid task number.");
+        }
 
         Task task = tasks.get(index);
         tasks.remove(index);

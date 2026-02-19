@@ -306,6 +306,10 @@ public class Parser {
             String flag = cmdParts[0];
             String argument = cmdParts[1].trim();
 
+            if (argument.isEmpty()) {
+                throw new InvalidInputException("Please provide an argument for the flag /" + flag + ".");
+            }
+
             switch (flag) {
             case "desc":
                 task.setDescription(argument);

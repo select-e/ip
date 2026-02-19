@@ -40,7 +40,11 @@ public class Ui {
      * @param taskList The task list
      */
     public String getListOfTasks(TaskList taskList) {
-        StringBuilder sb = new StringBuilder("✧ ✧ ✧\n");
+        if (taskList.getLength() == 0) {
+            return "✧ There are no tasks in your list. ✧";
+        }
+
+        StringBuilder sb = new StringBuilder("Here are the tasks in your list:\n✧ ✧ ✧\n");
         for (int i = 0; i < taskList.getLength(); i++) {
             sb.append((i + 1)).append(". ").append(taskList.getTask(i)).append("\n");
         }
