@@ -5,6 +5,7 @@
 Aerith is a desktop to-do list app, optimized for use via a Command Line Interface (CLI) while still having the benefits of a Graphical User Interface (GUI). 
 
 ## Command Summary
+
 | Action | Format |
 | ------- | ------ |
 | Add to-do | `todo DESCRIPTION` |
