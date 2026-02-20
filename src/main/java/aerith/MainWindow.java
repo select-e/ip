@@ -47,7 +47,12 @@ public class MainWindow extends AnchorPane {
      */
     @FXML
     private void handleUserInput() {
-        String input = userInput.getText();
+        String input = userInput.getText().trim();
+
+        if (input.isBlank()) {
+            return;
+        }
+
         String response = aerith.getResponse(input);
 
         // If command is "bye", close the app

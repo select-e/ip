@@ -33,7 +33,7 @@ public class Parser {
         // Split the input into command & body
         String[] commandParts = input.split(" ", 2);
         boolean isSingleWordCommand = commandParts.length < 2;
-        String commandHead = commandParts[0];
+        String commandHead = commandParts[0].toLowerCase();
         String commandBody = "";
         if (!isSingleWordCommand) {
             commandBody = commandParts[1];
@@ -58,7 +58,7 @@ public class Parser {
                 throw new InvalidInputException("The description of a todo cannot be empty.");
             }
             return addTodo(commandBody);
-                case "deadline":
+        case "deadline":
             if (isSingleWordCommand || commandBody.isBlank()) {
                 throw new InvalidInputException("The description of a deadline task cannot be empty.");
             }
@@ -268,7 +268,7 @@ public class Parser {
     private String searchForKeyword(String keyword) {
         assert !keyword.isBlank() : "Keyword should not be blank";
 
-        ArrayList<Task> relevantTasks = taskList.getTasksWithKeyword(keyword);
+        ArrayList<Task> relevantTasks = taskList.getTasksWithKeyword(keyword.trim().toLowerCase());
         return ui.getSearchResults(relevantTasks);
     }
 

@@ -107,6 +107,10 @@ public class Ui {
      * @param relevantTasks The search results
      */
     public String getSearchResults(ArrayList<Task> relevantTasks) {
+        if (relevantTasks.isEmpty()) {
+            return "✧ I could not find any tasks matching that keyword. ✧";
+        }
+
         StringBuilder sb = new StringBuilder("✧ ✧ ✧\n");
         sb.append("Here are the matching tasks in your list:\n");
         for (int i = 0; i < relevantTasks.size(); i++) {
