@@ -72,7 +72,12 @@ public class Parser {
             if (isSingleWordCommand || commandBody.isBlank()) {
                 throw new InvalidInputException("Please specify the task you want to remove.");
             }
-            int taskNum = Integer.parseInt(commandBody);
+            int taskNum;
+            try {
+                taskNum = Integer.parseInt(commandBody);
+            } catch(NumberFormatException e) {
+                throw new InvalidInputException(commandBody + " is not a valid task number.");
+            }
             return taskList.removeTask(taskNum - 1);
         case "find":
             if (isSingleWordCommand || commandBody.isBlank()) {
@@ -134,9 +139,13 @@ public class Parser {
      * Adds a todo to the task list.
      * @param taskDesc The user-inputted description
      */
-    private String addTodo(String taskDesc) throws StorageException {
+    private String addTodo(String taskDesc) throws StorageException, InvalidInputException {
         assert !taskDesc.isBlank() : "Task description should not be blank";
-        
+
+        if (taskDesc.contains("|")) {
+            throw new InvalidInputException("Task descriptions cannot contain the character '|'.");
+        }
+
         Todo todo = new Todo(taskDesc.trim());
         taskList.addTask(todo);
         return ui.getNewTodoConfirmation(todo);
@@ -153,6 +162,10 @@ public class Parser {
         // Handle the case where there is no description before the "/"
         if (taskDesc.isBlank()) {
             throw new InvalidInputException("The description of an event cannot be empty.");
+        }
+
+        if (taskDesc.contains("|")) {
+            throw new InvalidInputException("Task descriptions cannot contain the character '|'.");
         }
 
         Deadline deadline = getDeadlineFromCommand(parts);
@@ -225,6 +238,11 @@ public class Parser {
         if (taskDesc.isBlank()) {
             throw new InvalidInputException("The description of an event cannot be empty.");
         }
+
+        if (taskDesc.contains("|")) {
+            throw new InvalidInputException("Task descriptions cannot contain the character '|'.");
+        }
+
         Event event = getEventFromCommand(parts);
         taskList.addTask(event);
         return ui.getNewEventConfirmation(event);
@@ -255,6 +273,10 @@ public class Parser {
         if (toString.isBlank()) {
             throw new InvalidInputException("The event requires an ending date/time. "
                     + "Please specify it using the /to command.");
+        }
+
+        if (fromString.contains("|") || toString.contains("|")) {
+            throw new InvalidInputException("Argument cannot contain the character '|'.");
         }
 
         String taskDesc = parts[0].trim();
@@ -312,6 +334,9 @@ public class Parser {
 
             switch (flag) {
             case "desc":
+                if (argument.contains("|")) {
+                    throw new InvalidInputException("Task descriptions cannot contain the character '|'.");
+                }
                 task.setDescription(argument);
                 break;
             case "by":
@@ -325,11 +350,17 @@ public class Parser {
                 if (!(task instanceof Event event)) {
                     throw new InvalidInputException("I cannot change the /from field of this task, as it is not an event.");
                 }
+                if (argument.contains("|")) {
+                    throw new InvalidInputException("Argument cannot contain the character '|'.");
+                }
                 event.setStartDateTime(argument);
                 break;
             case "to":
                 if (!(task instanceof Event event)) {
                     throw new InvalidInputException("I cannot change the /to field of this task, as it is not an event.");
+                }
+                if (argument.contains("|")) {
+                    throw new InvalidInputException("Argument cannot contain the character '|'.");
                 }
                 event.setEndDateTime(argument);
                 break;

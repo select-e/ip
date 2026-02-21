@@ -18,7 +18,8 @@ public class Aerith {
         try {
             taskList = storage.getTaskList(ui);
         } catch (StorageException e) {
-            System.out.println(e.getMessage() + "\n");
+            taskList = new TaskList(storage, ui);
+            Main.displayErrorMessage(e.getMessage());
         }
         parser = new Parser(taskList, ui);
     }

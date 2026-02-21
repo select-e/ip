@@ -13,7 +13,8 @@ import javafx.stage.Stage;
  */
 public class Main extends Application {
 
-    private Aerith aerith = new Aerith();
+    private Aerith aerith;
+    private static MainWindow mainWindow;
 
     @Override
     public void start(Stage stage) {
@@ -25,10 +26,20 @@ public class Main extends Application {
             stage.setMinHeight(417);
             stage.setMinWidth(220);
             stage.setScene(scene);
-            fxmlLoader.<MainWindow>getController().setAerith(aerith);  // inject the Duke instance
+            mainWindow = fxmlLoader.getController();
+            aerith = new Aerith();
+            mainWindow.setAerith(aerith);  // inject the Duke instance
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Displays a message from Aerith, for exceptional cases
+     * @param message The error message
+     */
+    public static void displayErrorMessage(String message) {
+        mainWindow.displayAerithMessage(message);
     }
 }

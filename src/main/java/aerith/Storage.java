@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.format.DateTimeParseException;
 
 import aerith.exception.StorageException;
 import aerith.task.Deadline;
@@ -36,8 +37,8 @@ public class Storage {
             BufferedReader br = new BufferedReader(new FileReader(filePath));
             try {
                 getTasksFromFile(taskList, br);
-            } catch (IOException e) {
-                throw new StorageException(e.getMessage());
+            } catch (IOException | DateTimeParseException e) {
+                throw new StorageException("There was an error loading the saved data: " + e.getMessage());
             }
         } catch (FileNotFoundException e) {
             createNewFile();

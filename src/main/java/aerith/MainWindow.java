@@ -38,7 +38,15 @@ public class MainWindow extends AnchorPane {
     public void setAerith(Aerith d) {
         aerith = d;
 
-        dialogContainer.getChildren().add(DialogBox.getAerithDialog(aerith.getOpeningMessage(), aerithImage));
+        displayAerithMessage(aerith.getOpeningMessage());
+    }
+
+    /**
+     * Displays a message from Aerith
+     * @param message The message
+     */
+    public void displayAerithMessage(String message) {
+        dialogContainer.getChildren().add(DialogBox.getAerithDialog(message, aerithImage));
     }
 
     /**
